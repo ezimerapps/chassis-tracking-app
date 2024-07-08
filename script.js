@@ -49,10 +49,14 @@ document.addEventListener("DOMContentLoaded", async function() {
         return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Convert to days
     }
 
-    function getStatusColor(aging) {
-        if (aging < 3) return 'green';
-        if (aging < 5) return 'yellow';
-        return 'red';
+    function getStatusStyle(aging) {
+        if (aging < 3) {
+            return { backgroundColor: 'yellow', color: 'black', fontWeight: 'bold' };
+        } else if (aging < 5) {
+            return { backgroundColor: 'red', color: 'white', fontWeight: 'bold' };
+        } else {
+            return { backgroundColor: 'red', color: 'white', fontWeight: 'bold' };
+        }
     }
 
     function getStatusWithAging(status, createdAt) {
@@ -69,12 +73,12 @@ document.addEventListener("DOMContentLoaded", async function() {
                 const row = doc.data();
                 const aging = row.created_at ? calculateAging(row.created_at) : 'N/A';
                 const statusText = row.created_at ? getStatusWithAging(row.status, row.created_at) : row.status;
-                const color = getStatusColor(aging);
+                const style = getStatusStyle(aging);
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${row.account}</td>
                     <td>${row.chassis_number}</td>
-                    <td style="background-color:${color}">${statusText}</td>
+                    <td style="background-color:${style.backgroundColor}; color:${style.color}; font-weight:${style.fontWeight}">${statusText}</td>
                     <td>${row.comments}</td>
                     <td>
                         <button onclick="updateChassis('${doc.id}')">Update</button>
