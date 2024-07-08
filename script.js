@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     async function saveChassis(data) {
         try {
+            console.log("Saving chassis data:", data);
             await db.collection('chassis-tracking').add(data);
             console.log('Chassis data saved:', data);
             loadChassis();
