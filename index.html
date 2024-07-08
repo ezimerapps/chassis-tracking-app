@@ -5,29 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chassis Tracking App</title>
     <link rel="stylesheet" href="styles.css">
-    <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
+    <!-- Add Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js"></script>
+    <script>
+      // Your Firebase configuration
+      const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_PROJECT_ID.appspot.com",
+        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+        appId: "YOUR_APP_ID",
+        measurementId: "YOUR_MEASUREMENT_ID"
+      };
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyBZuFsJ6mwj6_zBX4DMsB_70td5WS_XQLU",
-    authDomain: "ezimer-tracking-c9237.firebaseapp.com",
-    projectId: "ezimer-tracking-c9237",
-    storageBucket: "ezimer-tracking-c9237.appspot.com",
-    messagingSenderId: "505006114011",
-    appId: "1:505006114011:web:ab3a7cc0918fe4686df8fe",
-    measurementId: "G-VM4Z5GDQYY"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.firestore();
+      window.db = db; // Make db globally accessible
+    </script>
 </head>
 <body>
     <h1>Chassis Tracking</h1>
@@ -73,6 +70,6 @@
             <!-- Rows will be added here dynamically -->
         </tbody>
     </table>
-    <script src="script.js" defer></script>
+    <script src="script.js"></script>
 </body>
 </html>
