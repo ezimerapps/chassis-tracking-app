@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             chassis_number: chassisNumber,
             status,
             comments,
-            created_at: serverTimestamp()
+            created_at: serverTimestamp()  // Save server timestamp
         };
 
         await saveChassis(data);
