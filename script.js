@@ -88,14 +88,13 @@ document.addEventListener("DOMContentLoaded", async function() {
                 const statusText = row.created_at ? getStatusWithAging(row.status, row.created_at) : row.status;
                 const style = getStatusStyle(aging);
                 const rtat = row.status === 'Repairs Complete' ? calculateRTAT(row.created_at, row.rtat_start) : 'N/A';
-                const encodedComments = encodeURIComponent(row.comments || '');
                 const tr = document.createElement('tr');
                 tr.setAttribute('data-id', doc.id);
                 tr.innerHTML = `
                     <td>${row.account}</td>
                     <td>${row.chassis_number}</td>
                     <td style="background-color:${style.backgroundColor}; color:${style.color}; font-weight:${style.fontWeight}">${statusText}</td>
-                    <td>${row.comments ? `<button onclick="viewComments('${doc.id}', '${encodedComments}')">View Comments</button>` : 'No Comments'}</td>
+                    <td>${row.comments ? `<button onclick='viewComments("${doc.id}", ${JSON.stringify(row.comments)})'>View Comments</button>` : 'No Comments'}</td>
                     <td>${rtat}</td>
                     <td>
                         <button onclick="enableEdit('${doc.id}')">Update</button>
@@ -111,8 +110,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
 
     window.viewComments = function(id, comments) {
-        const decodedComments = decodeURIComponent(comments);
-        document.getElementById('comments-content').innerText = decodedComments;
+        document.getElementById('comments-content').innerText = comments;
         document.getElementById('comments-popup').style.display = 'flex';
     }
 
