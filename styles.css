@@ -138,6 +138,12 @@ th, td {
 th {
     background-color: #f8f8f8;
     color: #333;
+    cursor: pointer;
+}
+
+th.sorting {
+    background-color: #007bff;
+    color: #fff;
 }
 
 td {
@@ -177,6 +183,7 @@ td button:first-child:hover {
     display: flex;
     justify-content: center;
     gap: 10px;
+    display: none; /* Hide sort buttons on desktop */
 }
 
 .sort-buttons button {
@@ -258,6 +265,7 @@ td button:first-child:hover {
     }
 
     .sort-buttons {
+        display: flex; /* Show sort buttons on mobile */
         flex-direction: column;
         gap: 5px;
     }
