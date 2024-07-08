@@ -266,14 +266,13 @@ td button:first-child:hover {
 
     .sort-buttons {
         display: flex; /* Show sort buttons on mobile */
-        flex-direction: column;
+        justify-content: center;
+        flex-direction: row; /* Ensure buttons are aligned horizontally */
         gap: 5px;
     }
 
     .sort-buttons button {
-        flex: none;
-        width: 100%;
-        max-width: none;
+        flex: 1; /* Ensure buttons take equal space */
         font-size: 12px;
     }
 }
