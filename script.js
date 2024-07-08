@@ -138,7 +138,8 @@ document.addEventListener("DOMContentLoaded", async function() {
             const chassisDoc = doc(db, 'chassis-tracking', id);
             await updateDoc(chassisDoc, {
                 status: newStatus,
-                comments: newComments
+                comments: newComments,
+                created_at: serverTimestamp() // Update the timestamp to reset aging
             });
             console.log('Chassis data updated');
             loadChassis();
