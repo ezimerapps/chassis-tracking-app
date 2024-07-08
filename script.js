@@ -1,5 +1,6 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", async function() {
     const db = window.db;
+    const chassisCollection = window.collection(db, 'chassis-tracking');
 
     document.getElementById('add-chassis-button').addEventListener('click', function () {
         document.getElementById('chassis-popup').style.display = 'flex';
@@ -15,15 +16,14 @@ document.addEventListener("DOMContentLoaded", function() {
         const chassisNumber = document.getElementById('chassis-number').value;
         const status = document.getElementById('status').value;
         const comments = document.getElementById('comments').value;
-        
+
         await saveChassis({ account, chassis_number: chassisNumber, status, comments });
         document.getElementById('chassis-popup').style.display = 'none';
     });
 
     async function saveChassis(data) {
         try {
-            console.log("Saving chassis data:", data);
-            await db.collection('chassis-tracking').add(data);
+            await window.addDoc(chassisCollection, data);
             console.log('Chassis data saved:', data);
             loadChassis();
         } catch (error) {
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     async function loadChassis() {
         try {
-            const querySnapshot = await db.collection('chassis-tracking').get();
+            const querySnapshot = await window.getDocs(chassisCollection);
             const tbody = document.getElementById('chassis-table').getElementsByTagName('tbody')[0];
             tbody.innerHTML = '';
             querySnapshot.forEach((doc) => {
@@ -61,7 +61,8 @@ document.addEventListener("DOMContentLoaded", function() {
         const newComments = prompt('Enter new comments:');
         if (newStatus !== null && newComments !== null) {
             try {
-                await db.collection('chassis-tracking').doc(id).update({
+                const chassisDoc = window.doc(db, 'chassis-tracking', id);
+                await window.updateDoc(chassisDoc, {
                     status: newStatus,
                     comments: newComments
                 });
@@ -75,7 +76,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
     async function deleteChassis(id) {
         try {
-            await db.collection('chassis-tracking').doc(id).delete();
+            const chassisDoc = window.doc(db, 'chassis-tracking', id);
+            await window.deleteDoc(chassisDoc);
             console.log('Chassis data deleted');
             loadChassis();
         } catch (error) {
