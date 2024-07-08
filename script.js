@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     const db = window.db;
     const chassisCollection = collection(db, 'chassis-tracking');
     let chassisData = [];
+    let currentSortColumn = null;
 
     document.getElementById('add-chassis-button').addEventListener('click', function () {
         document.getElementById('chassis-popup').style.display = 'flex';
@@ -205,7 +206,19 @@ document.addEventListener("DOMContentLoaded", async function() {
             return 0;
         });
         displayChassis(chassisData);
+        highlightSortedColumn(sortBy);
     };
+
+    function highlightSortedColumn(sortBy) {
+        if (currentSortColumn) {
+            document.querySelector(`th.sorting`).classList.remove('sorting');
+        }
+        const th = document.querySelector(`th[onclick="sortTable('${sortBy}')"]`);
+        if (th) {
+            th.classList.add('sorting');
+            currentSortColumn = sortBy;
+        }
+    }
 
     loadChassis();
 });
