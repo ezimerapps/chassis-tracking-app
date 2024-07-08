@@ -77,6 +77,14 @@ document.addEventListener("DOMContentLoaded", async function() {
         return `${status} for ${aging} day(s)`;
     }
 
+    function escapeHtml(text) {
+        return text.replace(/&/g, "&amp;")
+                   .replace(/</g, "&lt;")
+                   .replace(/>/g, "&gt;")
+                   .replace(/"/g, "&quot;")
+                   .replace(/'/g, "&#039;");
+    }
+
     async function loadChassis() {
         try {
             const querySnapshot = await getDocs(chassisCollection);
@@ -90,11 +98,12 @@ document.addEventListener("DOMContentLoaded", async function() {
                 const rtat = row.status === 'Repairs Complete' ? calculateRTAT(row.created_at, row.rtat_start) : 'N/A';
                 const tr = document.createElement('tr');
                 tr.setAttribute('data-id', doc.id);
+                const escapedComments = row.comments ? escapeHtml(row.comments) : '';
                 tr.innerHTML = `
                     <td>${row.account}</td>
                     <td>${row.chassis_number}</td>
                     <td style="background-color:${style.backgroundColor}; color:${style.color}; font-weight:${style.fontWeight}">${statusText}</td>
-                    <td>${row.comments ? `<button onclick='viewComments("${doc.id}", ${JSON.stringify(row.comments)})'>View Comments</button>` : 'No Comments'}</td>
+                    <td>${row.comments ? `<button onclick="viewComments('${doc.id}', '${escapedComments}')">View Comments</button>` : 'No Comments'}</td>
                     <td>${rtat}</td>
                     <td>
                         <button onclick="enableEdit('${doc.id}')">Update</button>
