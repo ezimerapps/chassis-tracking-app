@@ -117,6 +117,10 @@ h2 {
     margin-top: 40px;
 }
 
+.table-wrapper {
+    overflow-x: auto;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
@@ -161,4 +165,35 @@ td button:first-child {
 
 td button:first-child:hover {
     background-color: #218838;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    h1, h2 {
+        font-size: 1.5em;
+    }
+
+    .popup-content {
+        width: 90%;
+        max-width: 400px;
+    }
+
+    th, td {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    button {
+        font-size: 14px;
+        padding: 8px 16px;
+    }
+
+    form label, form input[type="text"], form select, form textarea, form button, #close-popup {
+        font-size: 14px;
+        padding: 8px;
+    }
 }
