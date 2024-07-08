@@ -3,6 +3,7 @@ import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc, serverTimestamp
 document.addEventListener("DOMContentLoaded", async function() {
     const db = window.db;
     const chassisCollection = collection(db, 'chassis-tracking');
+    let chassisData = [];
 
     document.getElementById('add-chassis-button').addEventListener('click', function () {
         document.getElementById('chassis-popup').style.display = 'flex';
@@ -80,34 +81,38 @@ document.addEventListener("DOMContentLoaded", async function() {
     async function loadChassis() {
         try {
             const querySnapshot = await getDocs(chassisCollection);
-            const tbody = document.getElementById('chassis-table').getElementsByTagName('tbody')[0];
-            tbody.innerHTML = '';
-            querySnapshot.forEach((doc) => {
-                const row = doc.data();
-                const aging = row.created_at ? calculateAging(row.created_at) : 'N/A';
-                const statusText = row.created_at ? getStatusWithAging(row.status, row.created_at) : row.status;
-                const style = getStatusStyle(aging);
-                const rtat = row.status === 'Repairs Complete' ? calculateRTAT(row.created_at, row.rtat_start) : 'N/A';
-                const tr = document.createElement('tr');
-                tr.setAttribute('data-id', doc.id);
-                const encodedComments = encodeURIComponent(row.comments || '');
-                tr.innerHTML = `
-                    <td>${row.account}</td>
-                    <td>${row.chassis_number}</td>
-                    <td style="background-color:${style.backgroundColor}; color:${style.color}; font-weight:${style.fontWeight}">${statusText}</td>
-                    <td>${row.comments ? `<button onclick="viewComments('${doc.id}', '${encodedComments}')">View Comments</button>` : 'No Comments'}</td>
-                    <td>${rtat}</td>
-                    <td>
-                        <button onclick="enableEdit('${doc.id}')">Update</button>
-                        <button onclick="deleteChassis('${doc.id}')">Delete</button>
-                        <button onclick="saveEdit('${doc.id}')" style="display:none">Save</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
+            chassisData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            displayChassis(chassisData);
         } catch (error) {
             console.error('Error loading chassis data:', error);
         }
+    }
+
+    function displayChassis(data) {
+        const tbody = document.getElementById('chassis-table').getElementsByTagName('tbody')[0];
+        tbody.innerHTML = '';
+        data.forEach((row) => {
+            const aging = row.created_at ? calculateAging(row.created_at) : 'N/A';
+            const statusText = row.created_at ? getStatusWithAging(row.status, row.created_at) : row.status;
+            const style = getStatusStyle(aging);
+            const rtat = row.status === 'Repairs Complete' ? calculateRTAT(row.created_at, row.rtat_start) : 'N/A';
+            const tr = document.createElement('tr');
+            tr.setAttribute('data-id', row.id);
+            const encodedComments = encodeURIComponent(row.comments || '');
+            tr.innerHTML = `
+                <td>${row.account}</td>
+                <td>${row.chassis_number}</td>
+                <td style="background-color:${style.backgroundColor}; color:${style.color}; font-weight:${style.fontWeight}">${statusText}</td>
+                <td>${row.comments ? `<button onclick="viewComments('${row.id}', '${encodedComments}')">View Comments</button>` : 'No Comments'}</td>
+                <td>${rtat}</td>
+                <td>
+                    <button onclick="enableEdit('${row.id}')">Update</button>
+                    <button onclick="deleteChassis('${row.id}')">Delete</button>
+                    <button onclick="saveEdit('${row.id}')" style="display:none">Save</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
     }
 
     window.viewComments = function(id, encodedComments) {
@@ -191,6 +196,15 @@ document.addEventListener("DOMContentLoaded", async function() {
         } catch (error) {
             console.error('Error deleting chassis data:', error);
         }
+    };
+
+    window.sortTable = function(sortBy) {
+        chassisData.sort((a, b) => {
+            if (a[sortBy] < b[sortBy]) return -1;
+            if (a[sortBy] > b[sortBy]) return 1;
+            return 0;
+        });
+        displayChassis(chassisData);
     };
 
     loadChassis();
