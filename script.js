@@ -1,4 +1,4 @@
-import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
 
 document.addEventListener("DOMContentLoaded", async function() {
     const db = window.db;
@@ -19,7 +19,15 @@ document.addEventListener("DOMContentLoaded", async function() {
         const status = document.getElementById('status').value;
         const comments = document.getElementById('comments').value;
 
-        await saveChassis({ account, chassis_number: chassisNumber, status, comments });
+        const data = {
+            account,
+            chassis_number: chassisNumber,
+            status,
+            comments,
+            created_at: serverTimestamp()
+        };
+
+        await saveChassis(data);
         document.getElementById('chassis-popup').style.display = 'none';
     });
 
@@ -34,6 +42,19 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
     }
 
+    function calculateAging(createdAt) {
+        const now = new Date();
+        const createdDate = createdAt.toDate();
+        const diffTime = Math.abs(now - createdDate);
+        return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Convert to days
+    }
+
+    function getStatusColor(aging) {
+        if (aging < 3) return 'green';
+        if (aging < 5) return 'yellow';
+        return 'red';
+    }
+
     async function loadChassis() {
         try {
             const querySnapshot = await getDocs(chassisCollection);
@@ -41,11 +62,14 @@ document.addEventListener("DOMContentLoaded", async function() {
             tbody.innerHTML = '';
             querySnapshot.forEach((doc) => {
                 const row = doc.data();
+                const aging = calculateAging(row.created_at);
+                const color = getStatusColor(aging);
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${row.account}</td>
                     <td>${row.chassis_number}</td>
-                    <td>${row.status}</td>
+                    <td style="background-color:${color}">${row.status}</td>
+                    <td>${aging} days</td>
                     <td>${row.comments}</td>
                     <td>
                         <button onclick="updateChassis('${doc.id}')">Update</button>
