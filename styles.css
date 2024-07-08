@@ -231,6 +231,19 @@ td button:first-child:hover {
     tr {
         margin-bottom: 15px;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        border-radius: 5px;
+        border-radius: 4px;
+        padding: 10px;
+    }
+
+    .sort-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 15px;
+    }
+
+    .sort-buttons button {
+        flex: 1;
+        margin: 0 5px;
+        font-size: 12px;
     }
 }
