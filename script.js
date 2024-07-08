@@ -12,6 +12,10 @@ document.addEventListener("DOMContentLoaded", async function() {
         document.getElementById('chassis-popup').style.display = 'none';
     });
 
+    document.getElementById('close-comments-popup').addEventListener('click', function () {
+        document.getElementById('comments-popup').style.display = 'none';
+    });
+
     document.getElementById('chassis-form').addEventListener('submit', async function (e) {
         e.preventDefault();
         const account = document.getElementById('account').value;
@@ -90,7 +94,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                     <td>${row.account}</td>
                     <td>${row.chassis_number}</td>
                     <td style="background-color:${style.backgroundColor}; color:${style.color}; font-weight:${style.fontWeight}">${statusText}</td>
-                    <td>${row.comments}</td>
+                    <td>${row.comments ? `<button onclick="viewComments('${doc.id}', '${row.comments}')">View Comments</button>` : 'No Comments'}</td>
                     <td>${rtat}</td>
                     <td>
                         <button onclick="enableEdit('${doc.id}')">Update</button>
@@ -103,6 +107,11 @@ document.addEventListener("DOMContentLoaded", async function() {
         } catch (error) {
             console.error('Error loading chassis data:', error);
         }
+    }
+
+    window.viewComments = function(id, comments) {
+        document.getElementById('comments-content').innerText = comments;
+        document.getElementById('comments-popup').style.display = 'flex';
     }
 
     window.enableEdit = function(id) {
