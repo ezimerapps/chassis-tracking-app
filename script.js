@@ -1,6 +1,8 @@
+import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+
 document.addEventListener("DOMContentLoaded", async function() {
     const db = window.db;
-    const chassisCollection = window.collection(db, 'chassis-tracking');
+    const chassisCollection = collection(db, 'chassis-tracking');
 
     document.getElementById('add-chassis-button').addEventListener('click', function () {
         document.getElementById('chassis-popup').style.display = 'flex';
@@ -23,7 +25,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     async function saveChassis(data) {
         try {
-            await window.addDoc(chassisCollection, data);
+            await addDoc(chassisCollection, data);
             console.log('Chassis data saved:', data);
             loadChassis();
         } catch (error) {
@@ -33,7 +35,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     async function loadChassis() {
         try {
-            const querySnapshot = await window.getDocs(chassisCollection);
+            const querySnapshot = await getDocs(chassisCollection);
             const tbody = document.getElementById('chassis-table').getElementsByTagName('tbody')[0];
             tbody.innerHTML = '';
             querySnapshot.forEach((doc) => {
@@ -56,13 +58,13 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
     }
 
-    async function updateChassis(id) {
+    window.updateChassis = async function(id) {
         const newStatus = prompt('Enter new status:');
         const newComments = prompt('Enter new comments:');
         if (newStatus !== null && newComments !== null) {
             try {
-                const chassisDoc = window.doc(db, 'chassis-tracking', id);
-                await window.updateDoc(chassisDoc, {
+                const chassisDoc = doc(db, 'chassis-tracking', id);
+                await updateDoc(chassisDoc, {
                     status: newStatus,
                     comments: newComments
                 });
@@ -72,18 +74,18 @@ document.addEventListener("DOMContentLoaded", async function() {
                 console.error('Error updating chassis data:', error);
             }
         }
-    }
+    };
 
-    async function deleteChassis(id) {
+    window.deleteChassis = async function(id) {
         try {
-            const chassisDoc = window.doc(db, 'chassis-tracking', id);
-            await window.deleteDoc(chassisDoc);
+            const chassisDoc = doc(db, 'chassis-tracking', id);
+            await deleteDoc(chassisDoc);
             console.log('Chassis data deleted');
             loadChassis();
         } catch (error) {
             console.error('Error deleting chassis data:', error);
         }
-    }
+    };
 
     loadChassis();
 });
