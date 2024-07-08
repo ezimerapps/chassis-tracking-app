@@ -75,14 +75,16 @@ document.addEventListener("DOMContentLoaded", async function() {
                 const statusText = row.created_at ? getStatusWithAging(row.status, row.created_at) : row.status;
                 const style = getStatusStyle(aging);
                 const tr = document.createElement('tr');
+                tr.setAttribute('data-id', doc.id);
                 tr.innerHTML = `
                     <td>${row.account}</td>
                     <td>${row.chassis_number}</td>
                     <td style="background-color:${style.backgroundColor}; color:${style.color}; font-weight:${style.fontWeight}">${statusText}</td>
                     <td>${row.comments}</td>
                     <td>
-                        <button onclick="updateChassis('${doc.id}')">Update</button>
+                        <button onclick="enableEdit('${doc.id}')">Update</button>
                         <button onclick="deleteChassis('${doc.id}')">Delete</button>
+                        <button onclick="saveEdit('${doc.id}')" style="display:none">Save</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -92,23 +94,62 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
     }
 
-    window.updateChassis = async function(id) {
-        const newStatus = prompt('Enter new status:');
-        const newComments = prompt('Enter new comments:');
-        if (newStatus !== null && newComments !== null) {
-            try {
-                const chassisDoc = doc(db, 'chassis-tracking', id);
-                await updateDoc(chassisDoc, {
-                    status: newStatus,
-                    comments: newComments
-                });
-                console.log('Chassis data updated');
-                loadChassis();
-            } catch (error) {
-                console.error('Error updating chassis data:', error);
-            }
+    window.enableEdit = function(id) {
+        const tr = document.querySelector(`tr[data-id="${id}"]`);
+        const statusCell = tr.cells[2];
+        const commentsCell = tr.cells[3];
+        const updateButton = tr.querySelector('button[onclick^="enableEdit"]');
+        const saveButton = tr.querySelector('button[onclick^="saveEdit"]');
+        
+        // Get current values
+        const currentStatus = statusCell.innerText.split(' for ')[0];
+        const currentComments = commentsCell.innerText;
+        
+        // Change status cell to dropdown
+        statusCell.innerHTML = `
+            <select id="status-select">
+                <option value="Awaiting Estimate" ${currentStatus === 'Awaiting Estimate' ? 'selected' : ''}>Awaiting Estimate</option>
+                <option value="Awaiting Approval" ${currentStatus === 'Awaiting Approval' ? 'selected' : ''}>Awaiting Approval</option>
+                <option value="AP - Awaiting Repair" ${currentStatus === 'AP - Awaiting Repair' ? 'selected' : ''}>AP - Awaiting Repair</option>
+                <option value="AP - Under Repair" ${currentStatus === 'AP - Under Repair' ? 'selected' : ''}>AP - Under Repair</option>
+                <option value="Repairs Complete" ${currentStatus === 'Repairs Complete' ? 'selected' : ''}>Repairs Complete</option>
+            </select>
+        `;
+
+        // Change comments cell to textarea
+        commentsCell.innerHTML = `<textarea id="comments-textarea">${currentComments}</textarea>`;
+        
+        // Hide update button and show save button
+        updateButton.style.display = 'none';
+        saveButton.style.display = 'inline';
+    }
+
+    window.saveEdit = async function(id) {
+        const tr = document.querySelector(`tr[data-id="${id}"]`);
+        const statusSelect = tr.querySelector('#status-select');
+        const commentsTextarea = tr.querySelector('#comments-textarea');
+        const updateButton = tr.querySelector('button[onclick^="enableEdit"]');
+        const saveButton = tr.querySelector('button[onclick^="saveEdit"]');
+
+        const newStatus = statusSelect.value;
+        const newComments = commentsTextarea.value;
+        
+        try {
+            const chassisDoc = doc(db, 'chassis-tracking', id);
+            await updateDoc(chassisDoc, {
+                status: newStatus,
+                comments: newComments
+            });
+            console.log('Chassis data updated');
+            loadChassis();
+        } catch (error) {
+            console.error('Error updating chassis data:', error);
         }
-    };
+
+        // Hide save button and show update button
+        updateButton.style.display = 'inline';
+        saveButton.style.display = 'none';
+    }
 
     window.deleteChassis = async function(id) {
         try {
