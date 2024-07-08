@@ -55,6 +55,11 @@ document.addEventListener("DOMContentLoaded", async function() {
         return 'red';
     }
 
+    function getStatusWithAging(status, createdAt) {
+        const aging = calculateAging(createdAt);
+        return `${status} for ${aging} day(s)`;
+    }
+
     async function loadChassis() {
         try {
             const querySnapshot = await getDocs(chassisCollection);
@@ -62,14 +67,14 @@ document.addEventListener("DOMContentLoaded", async function() {
             tbody.innerHTML = '';
             querySnapshot.forEach((doc) => {
                 const row = doc.data();
-                const aging = calculateAging(row.created_at);
+                const aging = row.created_at ? calculateAging(row.created_at) : 'N/A';
+                const statusText = row.created_at ? getStatusWithAging(row.status, row.created_at) : row.status;
                 const color = getStatusColor(aging);
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${row.account}</td>
                     <td>${row.chassis_number}</td>
-                    <td style="background-color:${color}">${row.status}</td>
-                    <td>${aging} days</td>
+                    <td style="background-color:${color}">${statusText}</td>
                     <td>${row.comments}</td>
                     <td>
                         <button onclick="updateChassis('${doc.id}')">Update</button>
