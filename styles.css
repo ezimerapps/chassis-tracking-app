@@ -167,6 +167,24 @@ td button:first-child:hover {
     background-color: #218838;
 }
 
+/* Sort section styles */
+.sort-section {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.sort-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.sort-buttons button {
+    flex: 1;
+    max-width: 150px;
+    font-size: 14px;
+}
+
 /* Responsive Styles */
 @media (max-width: 768px) {
     body {
@@ -235,15 +253,19 @@ td button:first-child:hover {
         padding: 10px;
     }
 
+    .sort-section p {
+        margin-bottom: 10px;
+    }
+
     .sort-buttons {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 15px;
+        flex-direction: column;
+        gap: 5px;
     }
 
     .sort-buttons button {
-        flex: 1;
-        margin: 0 5px;
+        flex: none;
+        width: 100%;
+        max-width: none;
         font-size: 12px;
     }
 }
