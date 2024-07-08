@@ -179,6 +179,10 @@ td button:first-child:hover {
     margin-bottom: 15px;
 }
 
+.sort-section p {
+    display: none; /* Hide by default */
+}
+
 .sort-buttons {
     display: flex;
     justify-content: center;
@@ -261,7 +265,7 @@ td button:first-child:hover {
     }
 
     .sort-section p {
-        margin-bottom: 10px;
+        display: block; /* Show on mobile */
     }
 
     .sort-buttons {
