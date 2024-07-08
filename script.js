@@ -24,7 +24,8 @@ document.addEventListener("DOMContentLoaded", async function() {
             chassis_number: chassisNumber,
             status,
             comments,
-            created_at: serverTimestamp()  // Save server timestamp
+            created_at: serverTimestamp(),  // Save server timestamp
+            rtat_start: status === 'Repairs Complete' ? null : serverTimestamp()  // Start RTAT if not complete
         };
 
         await saveChassis(data);
@@ -46,6 +47,14 @@ document.addEventListener("DOMContentLoaded", async function() {
         const now = new Date();
         const createdDate = createdAt.toDate();
         const diffTime = Math.abs(now - createdDate);
+        return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Convert to days
+    }
+
+    function calculateRTAT(createdAt, rtatStart) {
+        if (!rtatStart) return 'N/A';
+        const now = new Date();
+        const startDate = rtatStart.toDate();
+        const diffTime = Math.abs(now - startDate);
         return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Convert to days
     }
 
@@ -74,6 +83,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 const aging = row.created_at ? calculateAging(row.created_at) : 'N/A';
                 const statusText = row.created_at ? getStatusWithAging(row.status, row.created_at) : row.status;
                 const style = getStatusStyle(aging);
+                const rtat = row.status === 'Repairs Complete' ? calculateRTAT(row.created_at, row.rtat_start) : 'N/A';
                 const tr = document.createElement('tr');
                 tr.setAttribute('data-id', doc.id);
                 tr.innerHTML = `
@@ -81,6 +91,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                     <td>${row.chassis_number}</td>
                     <td style="background-color:${style.backgroundColor}; color:${style.color}; font-weight:${style.fontWeight}">${statusText}</td>
                     <td>${row.comments}</td>
+                    <td>${rtat}</td>
                     <td>
                         <button onclick="enableEdit('${doc.id}')">Update</button>
                         <button onclick="deleteChassis('${doc.id}')">Delete</button>
@@ -136,11 +147,19 @@ document.addEventListener("DOMContentLoaded", async function() {
         
         try {
             const chassisDoc = doc(db, 'chassis-tracking', id);
-            await updateDoc(chassisDoc, {
+            const updateData = {
                 status: newStatus,
-                comments: newComments,
-                created_at: serverTimestamp() // Update the timestamp to reset aging
-            });
+                comments: newComments
+            };
+
+            // Update the timestamp to reset aging and start/end RTAT if applicable
+            if (newStatus === 'Repairs Complete') {
+                updateData.rtat_start = null;
+            } else if (newStatus !== 'Awaiting Estimate') {
+                updateData.rtat_start = serverTimestamp();
+            }
+
+            await updateDoc(chassisDoc, updateData);
             console.log('Chassis data updated');
             loadChassis();
         } catch (error) {
