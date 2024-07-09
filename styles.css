@@ -27,6 +27,11 @@ button:hover {
     background-color: #0056b3;
 }
 
+#add-chassis-button {
+    display: block;
+    margin: 20px auto;
+}
+
 .popup {
     display: none;
     position: fixed;
@@ -274,15 +279,33 @@ td button:first-child:hover {
         flex: 1; /* Ensure buttons take equal space */
         font-size: 12px;
     }
+
+    /* Bottom Navigation Bar Styles */
+    .bottom-nav-mobile {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background-color: #333;
+        justify-content: center;
+        align-items: center;
+        height: 60px;
+        z-index: 1000;
+    }
+
+    .bottom-nav-mobile .nav-item {
+        color: white;
+        font-size: 24px;
+    }
 }
 
-/* Add Chassis Button Styles */
+/* Add Chassis Button for Desktop */
 .add-button-desktop {
     display: none;
     justify-content: center;
     align-items: center;
-    width: 30px;
-    height: 30px;
+    width: 50px;
+    height: 50px;
     background-color: #007bff;
     color: white;
     font-size: 24px;
@@ -292,31 +315,8 @@ td button:first-child:hover {
     border-radius: 5px;
 }
 
-.add-button-mobile {
-    display: none;
-    justify-content: center;
-    align-items: center;
-    width: 40px;
-    height: 40px;
-    background-color: #007bff;
-    color: white;
-    font-size: 30px;
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    cursor: pointer;
-    border-radius: 50%;
-    z-index: 1000;
-}
-
 @media (min-width: 768px) {
     .add-button-desktop {
-        display: flex;
-    }
-}
-
-@media (max-width: 767px) {
-    .add-button-mobile {
         display: flex;
     }
 }
