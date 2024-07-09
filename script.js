@@ -194,7 +194,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 <option value="AE" ${currentStatus === 'AE' ? 'selected' : ''}>Awaiting Estimate</option>
                 <option value="AA" ${currentStatus === 'AA' ? 'selected' : ''}>Awaiting Approval</option>
                 <option value="AR" ${currentStatus === 'AR' ? 'selected' : ''}>Awaiting Repair</option>
-                <option value="Under Repair" ${currentStatus === 'Under Repair' ? 'selected' : ''}>Under Repair</option>
+                <option value="UR" ${currentStatus === 'UR' ? 'selected' : ''}>Under Repair</option>
                 <option value="GO" ${currentStatus === 'GO' ? 'selected' : ''}>Repairs Completed</option>
             </select>
         `;
