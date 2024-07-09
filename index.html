@@ -30,6 +30,24 @@
 <body>
     <h1>EZ Repair Tracker</h1>
     
+    <div id="summary-table-wrapper">
+        <table id="summary-table">
+            <thead>
+                <tr>
+                    <th>Account</th>
+                    <th>AE</th>
+                    <th>AA</th>
+                    <th>AR</th>
+                    <th>UR</th>
+                    <th>GO</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows will be injected here -->
+            </tbody>
+        </table>
+    </div>
+    
     <div id="chassis-popup" class="popup">
         <div class="popup-content">
             <form id="chassis-form">
@@ -53,6 +71,7 @@
                     <option value="AA">Awaiting Approval</option>
                     <option value="AR">Awaiting Repair</option>
                     <option value="Under Repair">Under Repair</option>
+                    <option value="GO">Repairs Completed</option>
                 </select>
                 <label for="comments">Comments:</label>
                 <textarea id="comments"></textarea>
