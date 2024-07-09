@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EZIMER Tracking</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <script type="module">
       // Imported functions from SDKs
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
@@ -28,8 +29,7 @@
 </head>
 <body>
     <h1>EZ Repair Tracker</h1>
-    <button id="add-chassis-button">Add Chassis</button>
-
+    
     <div id="chassis-popup" class="popup">
         <div class="popup-content">
             <form id="chassis-form">
@@ -97,6 +97,17 @@
             </tbody>
         </table>
     </div>
+    
+    <!-- Add Chassis Button for Desktop -->
+    <div id="add-chassis-button-desktop" class="add-button-desktop">
+        <i class="fa-solid fa-plus"></i>
+    </div>
+
+    <!-- Add Chassis Button for Mobile -->
+    <div id="add-chassis-button-mobile" class="add-button-mobile">
+        <i class="fa-solid fa-plus"></i>
+    </div>
+
     <script type="module" src="script.js"></script>
 </body>
 </html>
