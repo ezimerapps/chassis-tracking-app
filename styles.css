@@ -318,4 +318,8 @@ td button:first-child:hover {
     .add-button-desktop {
         display: flex;
     }
+
+    .bottom-nav-mobile {
+        display: none;
+    }
 }
