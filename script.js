@@ -1,5 +1,3 @@
-import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
-
 document.addEventListener("DOMContentLoaded", async function() {
     const db = window.db;
     const chassisCollection = collection(db, 'chassis-tracking');
@@ -113,9 +111,9 @@ document.addEventListener("DOMContentLoaded", async function() {
                 <td>${row.comments ? `<button onclick="viewComments('${row.id}', '${encodedComments}')">View Comments</button>` : 'No Comments'}</td>
                 <td>${rtat}</td>
                 <td>
-                    <button onclick="enableEdit('${row.id}')">Update</button>
-                    <button onclick="deleteChassis('${row.id}')">Delete</button>
-                    <button onclick="saveEdit('${row.id}')" style="display:none">Save</button>
+                    <button class="update-btn" onclick="enableEdit('${row.id}')">Update</button>
+                    <button class="delete-btn" onclick="confirmDelete('${row.id}')">Delete</button>
+                    <button class="save-btn" onclick="saveEdit('${row.id}')" style="display:none">Save</button>
                 </td>
             `;
             tbody.appendChild(tr);
@@ -132,8 +130,9 @@ document.addEventListener("DOMContentLoaded", async function() {
         const tr = document.querySelector(`tr[data-id="${id}"]`);
         const statusCell = tr.cells[2];
         const commentsCell = tr.cells[3];
-        const updateButton = tr.querySelector('button[onclick^="enableEdit"]');
-        const saveButton = tr.querySelector('button[onclick^="saveEdit"]');
+        const updateButton = tr.querySelector('.update-btn');
+        const saveButton = tr.querySelector('.save-btn');
+        const deleteButton = tr.querySelector('.delete-btn');
         
         // Get current values
         const currentStatus = statusCell.innerText.split(' for ')[0];
@@ -153,17 +152,21 @@ document.addEventListener("DOMContentLoaded", async function() {
         // Change comments cell to textarea
         commentsCell.innerHTML = `<textarea id="comments-textarea">${currentComments}</textarea>`;
         
-        // Hide update button and show save button
+        // Update button states
         updateButton.style.display = 'none';
         saveButton.style.display = 'inline';
+        saveButton.style.backgroundColor = '#28a745'; // Green save button
+        deleteButton.innerText = 'Close'; // Change Delete to Close
+        deleteButton.classList.add('cancel-btn'); // Add a class to identify it as a cancel button
     }
 
     window.saveEdit = async function(id) {
         const tr = document.querySelector(`tr[data-id="${id}"]`);
         const statusSelect = tr.querySelector('#status-select');
         const commentsTextarea = tr.querySelector('#comments-textarea');
-        const updateButton = tr.querySelector('button[onclick^="enableEdit"]');
-        const saveButton = tr.querySelector('button[onclick^="saveEdit"]');
+        const updateButton = tr.querySelector('.update-btn');
+        const saveButton = tr.querySelector('.save-btn');
+        const deleteButton = tr.querySelector('.delete-btn');
 
         const newStatus = statusSelect.value;
         const newComments = commentsTextarea.value;
@@ -189,9 +192,25 @@ document.addEventListener("DOMContentLoaded", async function() {
             console.error('Error updating chassis data:', error);
         }
 
-        // Hide save button and show update button
+        // Reset button states
         updateButton.style.display = 'inline';
         saveButton.style.display = 'none';
+        deleteButton.innerText = 'Delete'; // Reset to Delete
+        deleteButton.classList.remove('cancel-btn'); // Remove cancel button class
+    }
+
+    window.confirmDelete = function(id) {
+        const deleteButton = document.querySelector(`tr[data-id="${id}"] .delete-btn`);
+        if (deleteButton.classList.contains('confirm')) {
+            deleteChassis(id);
+        } else {
+            deleteButton.innerHTML = '<i class="fa-solid fa-exclamation"></i>';
+            deleteButton.classList.add('confirm');
+            setTimeout(() => {
+                deleteButton.innerText = 'Delete';
+                deleteButton.classList.remove('confirm');
+            }, 3000);
+        }
     }
 
     window.deleteChassis = async function(id) {
