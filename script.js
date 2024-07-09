@@ -61,11 +61,11 @@ document.addEventListener("DOMContentLoaded", async function() {
         return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Convert to days
     }
 
-    function calculateRTAT(rtatStart) {
-        if (!rtatStart) return 'N/A';
-        const now = new Date();
+    function calculateRTAT(rtatStart, goDate) {
+        if (!rtatStart || !goDate) return 'N/A';
+        const endDate = goDate.toDate();
         const startDate = rtatStart.toDate();
-        const diffTime = Math.abs(now - startDate);
+        const diffTime = Math.abs(endDate - startDate);
         return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Convert to days
     }
 
@@ -83,6 +83,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
 
     function getRTATText(rtat) {
+        if (rtat === 'N/A') return rtat;
         const dayText = rtat === 1 ? 'Day' : 'Days';
         return `${rtat} ${dayText}`;
     }
@@ -105,8 +106,8 @@ document.addEventListener("DOMContentLoaded", async function() {
             const daysInStatus = row.rtat_start ? calculateDaysSince(row.rtat_start) : 'N/A';
             const statusText = getStatusWithDays(row.status, daysInStatus);
             const style = getStatusStyle(daysInStatus);
-            const rtat = row.status === 'GO' ? calculateRTAT(row.created_at, row.rtat_start) : daysInStatus;
-            const rtatText = (rtat !== 'N/A' && row.status !== 'GO') ? getRTATText(rtat) : rtat;
+            const rtat = row.status === 'GO' ? calculateRTAT(row.rtat_start, row.created_at) : daysInStatus;
+            const rtatText = (rtat !== 'N/A') ? getRTATText(rtat) : rtat;
             const tr = document.createElement('tr');
             tr.setAttribute('data-id', row.id);
             const encodedComments = encodeURIComponent(row.comments || '');
@@ -235,6 +236,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             // Stop RTAT when status changes to "GO"
             if (newStatus === 'GO') {
                 updateData.rtat_start = null;
+                updateData.created_at = serverTimestamp();
             }
 
             await updateDoc(chassisDoc, updateData);
