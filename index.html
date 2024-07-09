@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chassis Tracking App</title>
+    <title>EZIMER Tracking</title>
     <link rel="stylesheet" href="styles.css">
     <script type="module">
-      // Import the functions you need from the SDKs you need
+      // Imported functions from SDKs
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
       import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
 
-      // Your web app's Firebase configuration
       const firebaseConfig = {
         apiKey: "AIzaSyBZuFsJ6mwj6_zBX4DMsB_70td5WS_XQLU",
         authDomain: "ezimer-tracking-c9237.firebaseapp.com",
@@ -28,7 +27,7 @@
     </script>
 </head>
 <body>
-    <h1>Chassis Tracking</h1>
+    <h1>EZ Repair Tracker</h1>
     <button id="add-chassis-button">Add Chassis</button>
 
     <div id="chassis-popup" class="popup">
@@ -72,7 +71,7 @@
         </div>
     </div>
 
-    <h2>Chassis List</h2>
+    <h2>Tracked Chassis</h2>
     <div class="sort-section">
         <p>Sort By:</p>
         <div class="sort-buttons">
@@ -94,7 +93,7 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Rows will be added here dynamically -->
+                <!-- Rows injected here -->
             </tbody>
         </table>
     </div>
