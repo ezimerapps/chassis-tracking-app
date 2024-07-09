@@ -283,7 +283,7 @@ td button:first-child:hover {
     align-items: center;
     width: 50px;
     height: 50px;
-    background-color: blue;
+    background-color: #007bff;
     color: white;
     font-size: 24px;
     position: relative;
@@ -298,7 +298,7 @@ td button:first-child:hover {
     align-items: center;
     width: 60px;
     height: 60px;
-    background-color: blue;
+    background-color: #007bff;
     color: white;
     font-size: 30px;
     position: fixed;
