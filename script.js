@@ -190,11 +190,11 @@ document.addEventListener("DOMContentLoaded", async function() {
         const deleteButton = tr.querySelector('button[onclick^="deleteChassis"]');
         const saveButton = tr.querySelector('button.save-button');
         const closeButton = tr.querySelector('button[onclick^="cancelEdit"]');
-
+        
         // Get current values
         const currentStatus = statusCell.innerText.split(' for ')[0];
         const currentComments = commentsCell.innerText;
-
+        
         // Change status cell to dropdown
         statusCell.innerHTML = `
             <select id="status-select">
@@ -208,7 +208,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
         // Change comments cell to textarea
         commentsCell.innerHTML = `<textarea id="comments-textarea">${currentComments}</textarea>`;
-
+        
         // Hide update and delete buttons, show save and close buttons
         updateButton.style.display = 'none';
         deleteButton.style.display = 'none';
@@ -227,7 +227,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
         const newStatus = statusSelect.value;
         const newComments = commentsTextarea.value;
-
+        
         try {
             const chassisDoc = doc(db, 'chassis-tracking', id);
             const updateData = {
@@ -291,19 +291,6 @@ document.addEventListener("DOMContentLoaded", async function() {
             currentSortColumn = sortBy;
         }
     }
-
-    // Event listeners for the overview button
-    document.getElementById('overview-button-desktop').addEventListener('click', function() {
-        document.getElementById('overview-popup').style.display = 'flex';
-    });
-
-    document.getElementById('overview-button-mobile').addEventListener('click', function() {
-        document.getElementById('overview-popup').style.display = 'flex';
-    });
-
-    document.getElementById('close-overview-popup').addEventListener('click', function() {
-        document.getElementById('overview-popup').style.display = 'none';
-    });
 
     loadChassis();
 });
