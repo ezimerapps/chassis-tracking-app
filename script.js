@@ -6,7 +6,12 @@ document.addEventListener("DOMContentLoaded", async function() {
     let chassisData = [];
     let currentSortColumn = null;
 
-    document.getElementById('add-chassis-button').addEventListener('click', function () {
+    // Add event listeners for new add chassis buttons
+    document.getElementById('add-chassis-button-desktop').addEventListener('click', function () {
+        document.getElementById('chassis-popup').style.display = 'flex';
+    });
+
+    document.getElementById('add-chassis-button-mobile').addEventListener('click', function () {
         document.getElementById('chassis-popup').style.display = 'flex';
     });
 
@@ -79,7 +84,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         const dayText = aging === 1 ? 'Day' : 'Days';
         return `${status} for ${aging} ${dayText}`;
     }
-
 
     async function loadChassis() {
         try {
