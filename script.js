@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             status,
             comments,
             created_at: serverTimestamp(),  // Save server timestamp
-            rtat_start: status === 'Repairs Complete' ? null : serverTimestamp()  // Start RTAT if not complete
+            rtat_start: serverTimestamp()  // Start RTAT from now
         };
 
         await saveChassis(data);
@@ -54,10 +54,10 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
     }
 
-    function calculateAging(createdAt) {
+    function calculateDaysSince(date) {
         const now = new Date();
-        const createdDate = createdAt.toDate();
-        const diffTime = Math.abs(now - createdDate);
+        const startDate = date.toDate();
+        const diffTime = Math.abs(now - startDate);
         return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Convert to days
     }
 
@@ -69,20 +69,17 @@ document.addEventListener("DOMContentLoaded", async function() {
         return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Convert to days
     }
 
-    function getStatusStyle(aging) {
-        if (aging < 3) {
+    function getStatusStyle(daysInStatus) {
+        if (daysInStatus <= 3) {
             return { backgroundColor: 'yellow', color: 'black', fontWeight: 'bold' };
-        } else if (aging < 5) {
-            return { backgroundColor: 'red', color: 'white', fontWeight: 'bold' };
         } else {
             return { backgroundColor: 'red', color: 'white', fontWeight: 'bold' };
         }
     }
 
-    function getStatusWithAging(status, createdAt) {
-        const aging = calculateAging(createdAt);
-        const dayText = aging === 1 ? 'Day' : 'Days';
-        return `${status} for ${aging} ${dayText}`;
+    function getStatusWithDays(status, daysInStatus) {
+        const dayText = daysInStatus === 1 ? 'Day' : 'Days';
+        return `${status} for ${daysInStatus} ${dayText}`;
     }
 
     async function loadChassis() {
@@ -100,10 +97,10 @@ document.addEventListener("DOMContentLoaded", async function() {
         const tbody = document.getElementById('chassis-table').getElementsByTagName('tbody')[0];
         tbody.innerHTML = '';
         data.forEach((row) => {
-            const aging = row.created_at ? calculateAging(row.created_at) : 'N/A';
-            const statusText = row.created_at ? getStatusWithAging(row.status, row.created_at) : row.status;
-            const style = getStatusStyle(aging);
-            const rtat = row.status === 'Repairs Complete' ? calculateRTAT(row.created_at, row.rtat_start) : 'N/A';
+            const daysInStatus = row.rtat_start ? calculateDaysSince(row.rtat_start) : 'N/A';
+            const statusText = getStatusWithDays(row.status, daysInStatus);
+            const style = getStatusStyle(daysInStatus);
+            const rtat = row.status === 'GO' ? calculateRTAT(row.created_at, row.rtat_start) : daysInStatus;
             const tr = document.createElement('tr');
             tr.setAttribute('data-id', row.id);
             const encodedComments = encodeURIComponent(row.comments || '');
@@ -225,14 +222,13 @@ document.addEventListener("DOMContentLoaded", async function() {
             const chassisDoc = doc(db, 'chassis-tracking', id);
             const updateData = {
                 status: newStatus,
-                comments: newComments
+                comments: newComments,
+                rtat_start: serverTimestamp() // Reset the RTAT start timestamp
             };
 
-            // Update the timestamp to reset aging and start/end RTAT if applicable
-            if (newStatus === 'Repairs Complete') {
+            // Stop RTAT when status changes to "GO"
+            if (newStatus === 'GO') {
                 updateData.rtat_start = null;
-            } else if (newStatus !== 'Awaiting Estimate') {
-                updateData.rtat_start = serverTimestamp();
             }
 
             await updateDoc(chassisDoc, updateData);
