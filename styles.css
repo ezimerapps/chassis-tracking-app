@@ -235,23 +235,41 @@ button.save-button:hover {
     }
 
     table, thead, tbody, th, td, tr {
-        display: table; /* Ensure table layout */
+        display: block;
     }
 
-    th, td {
-        display: table-cell; /* Ensure table headers and cells display correctly */
+    th {
+        display: none;
+    }
+
+    td {
+        border: none;
+        position: relative;
+        padding-left: 50%;
+        text-align: left;
     }
 
     td:before {
-        display: none; /* Hide pseudo-element content */
+        position: absolute;
+        top: 50%;
+        left: 10px;
+        transform: translateY(-50%);
+        font-weight: bold;
+        white-space: nowrap;
     }
 
+    td:nth-of-type(1):before { content: "Account"; }
+    td:nth-of-type(2):before { content: "Chassis Number"; }
+    td:nth-of-type(3):before { content: "Status"; }
+    td:nth-of-type(4):before { content: "Comments"; }
+    td:nth-of-type(5):before { content: "RTAT"; }
+    td:nth-of-type(6):before { content: "Actions"; }
+
     tr {
-        display: table-row; /* Ensure table rows display correctly */
-        margin-bottom: 0; /* Remove bottom margin for table rows */
-        box-shadow: none; /* Remove box shadow for table rows */
-        border-radius: 0; /* Remove border-radius for table rows */
-        padding: 0; /* Remove padding for table rows */
+        margin-bottom: 15px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        border-radius: 4px;
+        padding: 10px;
     }
 
     .sort-section p {
@@ -321,5 +339,63 @@ button.save-button:hover {
 
     .bottom-nav-mobile {
         display: none;
+    }
+}
+
+/* Accounts Overview Table Styles */
+.popup-content .table-wrapper {
+    overflow-x: auto;
+}
+
+.popup-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 auto;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.popup-content th, .popup-content td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+}
+
+.popup-content th {
+    background-color: #f8f8f8;
+    color: #333;
+}
+
+.popup-content td {
+    color: #555;
+}
+
+/* Accounts Overview Table Mobile Styles */
+@media (max-width: 768px) {
+    .popup-content table, 
+    .popup-content thead, 
+    .popup-content tbody, 
+    .popup-content th, 
+    .popup-content td, 
+    .popup-content tr {
+        display: table; /* Maintain table layout */
+    }
+
+    .popup-content th, .popup-content td {
+        display: table-cell; /* Ensure table headers and cells display correctly */
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    .popup-content td:before {
+        display: none; /* Hide pseudo-element content */
+    }
+
+    .popup-content tr {
+        display: table-row; /* Ensure table rows display correctly */
+        margin-bottom: 0; /* Remove bottom margin for table rows */
+        box-shadow: none; /* Remove box shadow for table rows */
+        border-radius: 0; /* Remove border-radius for table rows */
+        padding: 0; /* Remove padding for table rows */
     }
 }
