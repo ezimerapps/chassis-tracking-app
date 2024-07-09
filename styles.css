@@ -396,6 +396,5 @@ button.save-button:hover {
         margin-bottom: 0; /* Remove bottom margin for table rows */
         box-shadow: none; /* Remove box shadow for table rows */
         border-radius: 0; /* Remove border-radius for table rows */
-        padding: 8; /* Remove padding for table rows */
     }
 }
