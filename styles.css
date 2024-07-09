@@ -27,11 +27,6 @@ button:hover {
     background-color: #0056b3;
 }
 
-#add-chassis-button {
-    display: block;
-    margin: 20px auto;
-}
-
 .popup {
     display: none;
     position: fixed;
@@ -278,5 +273,50 @@ td button:first-child:hover {
     .sort-buttons button {
         flex: 1; /* Ensure buttons take equal space */
         font-size: 12px;
+    }
+}
+
+/* Add Chassis Button Styles */
+.add-button-desktop {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    height: 50px;
+    background-color: blue;
+    color: white;
+    font-size: 24px;
+    position: relative;
+    margin: 20px auto;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.add-button-mobile {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    width: 60px;
+    height: 60px;
+    background-color: blue;
+    color: white;
+    font-size: 30px;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    cursor: pointer;
+    border-radius: 50%;
+    z-index: 1000;
+}
+
+@media (min-width: 768px) {
+    .add-button-desktop {
+        display: flex;
+    }
+}
+
+@media (max-width: 767px) {
+    .add-button-mobile {
+        display: flex;
     }
 }
