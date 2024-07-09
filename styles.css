@@ -27,11 +27,6 @@ button:hover {
     background-color: #0056b3;
 }
 
-#add-chassis-button {
-    display: block;
-    margin: 20px auto;
-}
-
 .popup {
     display: none;
     position: fixed;
