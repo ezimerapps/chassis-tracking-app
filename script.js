@@ -76,8 +76,10 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     function getStatusWithAging(status, createdAt) {
         const aging = calculateAging(createdAt);
-        return `${status} for ${aging} day(s)`;
+        const dayText = aging === 1 ? 'Day' : 'Days';
+        return `${status} for ${aging} ${dayText}`;
     }
+
 
     async function loadChassis() {
         try {
@@ -138,7 +140,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             <select id="status-select">
                 <option value="AE" ${currentStatus === 'AE' ? 'selected' : ''}>Awaiting Estimate</option>
                 <option value="AA" ${currentStatus === 'AA' ? 'selected' : ''}>Awaiting Approval</option>
-                <option value="AP" ${currentStatus === 'AR' ? 'selected' : ''}>Awaiting Repair</option>
+                <option value="AR" ${currentStatus === 'AR' ? 'selected' : ''}>Awaiting Repair</option>
                 <option value="Under Repair" ${currentStatus === 'Under Repair' ? 'selected' : ''}>Under Repair</option>
                 <option value="Repairs Completed" ${currentStatus === 'Repairs Completed' ? 'selected' : ''}>Repairs Completed</option>
             </select>
