@@ -136,9 +136,9 @@ document.addEventListener("DOMContentLoaded", async function() {
         // Change status cell to dropdown
         statusCell.innerHTML = `
             <select id="status-select">
-                <option value="AE" ${currentStatus === 'AE' ? 'selected' : ''}>AE</option>
-                <option value="AA" ${currentStatus === 'AA' ? 'selected' : ''}>AA</option>
-                <option value="AP" ${currentStatus === 'AP' ? 'selected' : ''}>AP</option>
+                <option value="AE" ${currentStatus === 'AE' ? 'selected' : ''}>Awaiting Estimate</option>
+                <option value="AA" ${currentStatus === 'AA' ? 'selected' : ''}>Awaiting Approval</option>
+                <option value="AP" ${currentStatus === 'AR' ? 'selected' : ''}>Awaiting Repair</option>
                 <option value="Under Repair" ${currentStatus === 'Under Repair' ? 'selected' : ''}>Under Repair</option>
                 <option value="Repairs Completed" ${currentStatus === 'Repairs Completed' ? 'selected' : ''}>Repairs Completed</option>
             </select>
