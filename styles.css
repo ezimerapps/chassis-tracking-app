@@ -285,7 +285,7 @@ td button:first-child:hover {
         background-color: #FFF;
         justify-content: center;
         align-items: center;
-        height: 60px;
+        height: 50px;
         z-index: 1000;
     }
 
