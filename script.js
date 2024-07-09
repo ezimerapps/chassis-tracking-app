@@ -115,7 +115,8 @@ document.addEventListener("DOMContentLoaded", async function() {
                 <td>
                     <button onclick="enableEdit('${row.id}')">Update</button>
                     <button onclick="deleteChassis('${row.id}')">Delete</button>
-                    <button onclick="saveEdit('${row.id}')" style="display:none">Save</button>
+                    <button class="save-button" onclick="saveEdit('${row.id}')" style="display:none">Save</button>
+                    <button onclick="cancelEdit('${row.id}')" style="display:none">Close</button>
                 </td>
             `;
             tbody.appendChild(tr);
@@ -133,7 +134,9 @@ document.addEventListener("DOMContentLoaded", async function() {
         const statusCell = tr.cells[2];
         const commentsCell = tr.cells[3];
         const updateButton = tr.querySelector('button[onclick^="enableEdit"]');
-        const saveButton = tr.querySelector('button[onclick^="saveEdit"]');
+        const deleteButton = tr.querySelector('button[onclick^="deleteChassis"]');
+        const saveButton = tr.querySelector('button.save-button');
+        const closeButton = tr.querySelector('button[onclick^="cancelEdit"]');
         
         // Get current values
         const currentStatus = statusCell.innerText.split(' for ')[0];
@@ -153,9 +156,11 @@ document.addEventListener("DOMContentLoaded", async function() {
         // Change comments cell to textarea
         commentsCell.innerHTML = `<textarea id="comments-textarea">${currentComments}</textarea>`;
         
-        // Hide update button and show save button
+        // Hide update and delete buttons, show save and close buttons
         updateButton.style.display = 'none';
+        deleteButton.style.display = 'none';
         saveButton.style.display = 'inline';
+        closeButton.style.display = 'inline';
     }
 
     window.saveEdit = async function(id) {
@@ -163,7 +168,9 @@ document.addEventListener("DOMContentLoaded", async function() {
         const statusSelect = tr.querySelector('#status-select');
         const commentsTextarea = tr.querySelector('#comments-textarea');
         const updateButton = tr.querySelector('button[onclick^="enableEdit"]');
-        const saveButton = tr.querySelector('button[onclick^="saveEdit"]');
+        const deleteButton = tr.querySelector('button[onclick^="deleteChassis"]');
+        const saveButton = tr.querySelector('button.save-button');
+        const closeButton = tr.querySelector('button[onclick^="cancelEdit"]');
 
         const newStatus = statusSelect.value;
         const newComments = commentsTextarea.value;
@@ -189,9 +196,15 @@ document.addEventListener("DOMContentLoaded", async function() {
             console.error('Error updating chassis data:', error);
         }
 
-        // Hide save button and show update button
+        // Hide save and close buttons, show update and delete buttons
         updateButton.style.display = 'inline';
+        deleteButton.style.display = 'inline';
         saveButton.style.display = 'none';
+        closeButton.style.display = 'none';
+    }
+
+    window.cancelEdit = function(id) {
+        loadChassis();
     }
 
     window.deleteChassis = async function(id) {
