@@ -1,20 +1,18 @@
+import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+
 document.addEventListener("DOMContentLoaded", async function() {
     const db = window.db;
     const chassisCollection = collection(db, 'chassis-tracking');
     let chassisData = [];
     let currentSortColumn = null;
 
-    // Event listeners for new Accounts Overview button
-    document.getElementById('accounts-overview-button-desktop').addEventListener('click', function () {
-        document.getElementById('accounts-overview-popup').style.display = 'flex';
+    // Add event listeners for new add chassis buttons
+    document.getElementById('add-chassis-button-desktop').addEventListener('click', function () {
+        document.getElementById('chassis-popup').style.display = 'flex';
     });
 
-    document.getElementById('accounts-overview-button-mobile').addEventListener('click', function () {
-        document.getElementById('accounts-overview-popup').style.display = 'flex';
-    });
-
-    document.getElementById('close-accounts-overview-popup').addEventListener('click', function () {
-        document.getElementById('accounts-overview-popup').style.display = 'none';
+    document.getElementById('add-chassis-button-mobile').addEventListener('click', function () {
+        document.getElementById('chassis-popup').style.display = 'flex';
     });
 
     document.getElementById('close-popup').addEventListener('click', function () {
@@ -23,6 +21,20 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     document.getElementById('close-comments-popup').addEventListener('click', function () {
         document.getElementById('comments-popup').style.display = 'none';
+    });
+
+    document.getElementById('close-accounts-overview-popup').addEventListener('click', function () {
+        document.getElementById('accounts-overview-popup').style.display = 'none';
+    });
+
+    document.getElementById('accounts-overview-button-desktop').addEventListener('click', function () {
+        document.getElementById('accounts-overview-popup').style.display = 'flex';
+        updateSummaryTable(chassisData); // Ensure the summary table is updated with the latest data
+    });
+
+    document.getElementById('accounts-overview-button-mobile').addEventListener('click', function () {
+        document.getElementById('accounts-overview-popup').style.display = 'flex';
+        updateSummaryTable(chassisData); // Ensure the summary table is updated with the latest data
     });
 
     document.getElementById('chassis-form').addEventListener('submit', async function (e) {
