@@ -157,19 +157,6 @@ td button:hover {
     background-color: #c82333;
 }
 
-td .save-btn {
-    background-color: #28a745;
-    margin-right: 8px;
-}
-
-td .save-btn:hover {
-    background-color: #218838;
-}
-
-td .delete-btn.confirm {
-    background-color: #ffc107;
-}
-
 td button:first-child {
     background-color: #28a745;
     margin-right: 8px;
