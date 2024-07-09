@@ -1,3 +1,4 @@
+/* General Styles */
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f9;
@@ -164,6 +165,16 @@ td button:first-child {
 
 td button:first-child:hover {
     background-color: #218838;
+}
+
+/* Additional styles for save button */
+button.save-button {
+    background-color: #28a745; /* Green */
+    color: #fff;
+}
+
+button.save-button:hover {
+    background-color: #218838; /* Darker green */
 }
 
 /* Sort section styles */
