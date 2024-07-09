@@ -69,11 +69,14 @@ document.addEventListener("DOMContentLoaded", async function() {
         return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Convert to days
     }
 
-    function getStatusStyle(daysInStatus) {
+    function getStatusStyle(status, daysInStatus) {
+        if (status === 'GO') {
+        return { backgroundColor: 'green', color: 'white', fontWeight: 'bold' };
+        }
         if (daysInStatus <= 3) {
-            return { backgroundColor: 'yellow', color: 'black', fontWeight: 'bold' };
+        return { backgroundColor: 'yellow', color: 'black', fontWeight: 'bold' };
         } else {
-            return { backgroundColor: 'red', color: 'white', fontWeight: 'bold' };
+        return { backgroundColor: 'red', color: 'white', fontWeight: 'bold' };
         }
     }
 
