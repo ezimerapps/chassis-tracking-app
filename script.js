@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Convert to days
     }
 
-    function calculateRTAT(createdAt, rtatStart) {
+    function calculateRTAT(rtatStart) {
         if (!rtatStart) return 'N/A';
         const now = new Date();
         const startDate = rtatStart.toDate();
@@ -80,6 +80,11 @@ document.addEventListener("DOMContentLoaded", async function() {
     function getStatusWithDays(status, daysInStatus) {
         const dayText = daysInStatus === 1 ? 'Day' : 'Days';
         return `${status} for ${daysInStatus} ${dayText}`;
+    }
+
+    function getRTATText(rtat) {
+        const dayText = rtat === 1 ? 'Day' : 'Days';
+        return `${rtat} ${dayText}`;
     }
 
     async function loadChassis() {
@@ -101,6 +106,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             const statusText = getStatusWithDays(row.status, daysInStatus);
             const style = getStatusStyle(daysInStatus);
             const rtat = row.status === 'GO' ? calculateRTAT(row.created_at, row.rtat_start) : daysInStatus;
+            const rtatText = (rtat !== 'N/A' && row.status !== 'GO') ? getRTATText(rtat) : rtat;
             const tr = document.createElement('tr');
             tr.setAttribute('data-id', row.id);
             const encodedComments = encodeURIComponent(row.comments || '');
@@ -109,7 +115,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 <td>${row.chassis_number}</td>
                 <td style="background-color:${style.backgroundColor}; color:${style.color}; font-weight:${style.fontWeight}">${statusText}</td>
                 <td>${row.comments ? `<button onclick="viewComments('${row.id}', '${encodedComments}')">View Comments</button>` : 'No Comments'}</td>
-                <td>${rtat}</td>
+                <td>${rtatText}</td>
                 <td>
                     <button onclick="enableEdit('${row.id}')">Update</button>
                     <button onclick="deleteChassis('${row.id}')">Delete</button>
