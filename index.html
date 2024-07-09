@@ -12,13 +12,13 @@
       import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
 
       const firebaseConfig = {
-        apiKey: "API_KEY",
-        authDomain: "AUTH_DOMAIN",
-        projectId: "PROJECT_ID",
-        storageBucket: "STORAGE_BUCKET",
-        messagingSenderId: "MESSAGING_SENDER_ID",
-        appId: "APP_ID",
-        measurementId: "MEASUREMENT_ID"
+        apiKey: "AIzaSyBZuFsJ6mwj6_zBX4DMsB_70td5WS_XQLU",
+        authDomain: "ezimer-tracking-c9237.firebaseapp.com",
+        projectId: "ezimer-tracking-c9237",
+        storageBucket: "ezimer-tracking-c9237.appspot.com",
+        messagingSenderId: "505006114011",
+        appId: "1:505006114011:web:ab3a7cc0918fe4686df8fe",
+        measurementId: "G-VM4Z5GDQYY"
       };
 
       // Initialize Firebase
@@ -29,52 +29,25 @@
 </head>
 <body>
     <h1>EZ Repair Tracker</h1>
-
-    <!-- Navigation Bar for Desktop -->
-    <div id="bottom-nav-desktop" class="bottom-nav-desktop">
-        <div class="nav-item" id="overview-button-desktop">
-            <i class="fa-solid fa-table"></i> Accounts Overview
-        </div>
-        <div class="nav-item" id="add-chassis-button-desktop">
-            <i class="fa-regular fa-square-plus"></i>
-        </div>
+    
+    <div id="summary-table-wrapper">
+        <table id="summary-table">
+            <thead>
+                <tr>
+                    <th>Account</th>
+                    <th>AE</th>
+                    <th>AA</th>
+                    <th>AR</th>
+                    <th>UR</th>
+                    <th>GO</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows will be injected here -->
+            </tbody>
+        </table>
     </div>
-
-    <!-- Navigation Bar for Mobile -->
-    <div id="bottom-nav-mobile" class="bottom-nav-mobile">
-        <div class="nav-item" id="overview-button-mobile">
-            <i class="fa-solid fa-table"></i>
-        </div>
-        <div class="nav-item" id="add-chassis-button-mobile">
-            <i class="fa-regular fa-square-plus"></i>
-        </div>
-    </div>
-
-    <!-- Accounts Overview Popup -->
-    <div id="overview-popup" class="popup">
-        <div class="popup-content">
-            <button id="close-overview-popup">Close</button>
-            <div id="summary-table-wrapper">
-                <table id="summary-table">
-                    <thead>
-                        <tr>
-                            <th>Account</th>
-                            <th>AE</th>
-                            <th>AA</th>
-                            <th>AR</th>
-                            <th>UR</th>
-                            <th>GO</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Rows will be injected here -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <!-- Existing popups and other elements -->
+    
     <div id="chassis-popup" class="popup">
         <div class="popup-content">
             <form id="chassis-form">
@@ -144,6 +117,20 @@
                 <!-- Rows injected here -->
             </tbody>
         </table>
+    </div>
+    
+    <!-- Navigation Bar for Desktop -->
+    <div id="bottom-nav-desktop" class="bottom-nav-desktop">
+        <div class="nav-item" id="add-chassis-button-desktop">
+            <i class="fa-regular fa-square-plus"></i>
+        </div>
+    </div>
+
+    <!-- Navigation Bar for Mobile -->
+    <div id="bottom-nav-mobile" class="bottom-nav-mobile">
+        <div class="nav-item" id="add-chassis-button-mobile">
+            <i class="fa-regular fa-square-plus"></i>
+        </div>
     </div>
 
     <script type="module" src="script.js"></script>
