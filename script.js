@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", async function() {
     const db = window.db;
-    const chassisCollection = collection(db, 'chassis-tracking');
+    const chassisCollection = window.collection(db, 'chassis-tracking');
     let chassisData = [];
     let currentSortColumn = null;
 
@@ -33,8 +33,8 @@ document.addEventListener("DOMContentLoaded", async function() {
             chassis_number: chassisNumber,
             status,
             comments,
-            created_at: serverTimestamp(),  // Save server timestamp
-            rtat_start: status === 'Repairs Complete' ? null : serverTimestamp()  // Start RTAT if not complete
+            created_at: window.serverTimestamp(),  // Save server timestamp
+            rtat_start: status === 'Repairs Complete' ? null : window.serverTimestamp()  // Start RTAT if not complete
         };
 
         await saveChassis(data);
@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     async function saveChassis(data) {
         try {
             console.log("Saving chassis data:", data);
-            await addDoc(chassisCollection, data);
+            await window.addDoc(chassisCollection, data);
             console.log('Chassis data saved:', data);
             loadChassis();
         } catch (error) {
@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     async function loadChassis() {
         try {
-            const querySnapshot = await getDocs(chassisCollection);
+            const querySnapshot = await window.getDocs(chassisCollection);
             chassisData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             displayChassis(chassisData);
         } catch (error) {
@@ -172,7 +172,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         const newComments = commentsTextarea.value;
         
         try {
-            const chassisDoc = doc(db, 'chassis-tracking', id);
+            const chassisDoc = window.doc(db, 'chassis-tracking', id);
             const updateData = {
                 status: newStatus,
                 comments: newComments
@@ -182,10 +182,10 @@ document.addEventListener("DOMContentLoaded", async function() {
             if (newStatus === 'Repairs Complete') {
                 updateData.rtat_start = null;
             } else if (newStatus !== 'Awaiting Estimate') {
-                updateData.rtat_start = serverTimestamp();
+                updateData.rtat_start = window.serverTimestamp();
             }
 
-            await updateDoc(chassisDoc, updateData);
+            await window.updateDoc(chassisDoc, updateData);
             console.log('Chassis data updated');
             loadChassis();
         } catch (error) {
@@ -215,8 +215,8 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     window.deleteChassis = async function(id) {
         try {
-            const chassisDoc = doc(db, 'chassis-tracking', id);
-            await deleteDoc(chassisDoc);
+            const chassisDoc = window.doc(db, 'chassis-tracking', id);
+            await window.deleteDoc(chassisDoc);
             console.log('Chassis data deleted');
             loadChassis();
         } catch (error) {
