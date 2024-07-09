@@ -90,6 +90,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             const querySnapshot = await getDocs(chassisCollection);
             chassisData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             displayChassis(chassisData);
+            updateSummaryTable(chassisData);
         } catch (error) {
             console.error('Error loading chassis data:', error);
         }
@@ -123,6 +124,41 @@ document.addEventListener("DOMContentLoaded", async function() {
         });
     }
 
+    function updateSummaryTable(data) {
+        const summary = {};
+
+        // Initialize summary object
+        data.forEach(row => {
+            if (!summary[row.account]) {
+                summary[row.account] = {
+                    AE: 0,
+                    AA: 0,
+                    AR: 0,
+                    UR: 0,
+                    GO: 0
+                };
+            }
+            summary[row.account][row.status]++;
+        });
+
+        // Generate table rows
+        const tbody = document.getElementById('summary-table').getElementsByTagName('tbody')[0];
+        tbody.innerHTML = '';
+        for (const account in summary) {
+            const row = summary[account];
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${account}</td>
+                <td>${row.AE}</td>
+                <td>${row.AA}</td>
+                <td>${row.AR}</td>
+                <td>${row.UR}</td>
+                <td>${row.GO}</td>
+            `;
+            tbody.appendChild(tr);
+        }
+    }
+
     window.viewComments = function(id, encodedComments) {
         const decodedComments = decodeURIComponent(encodedComments);
         document.getElementById('comments-content').innerText = decodedComments;
@@ -149,7 +185,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 <option value="AA" ${currentStatus === 'AA' ? 'selected' : ''}>Awaiting Approval</option>
                 <option value="AR" ${currentStatus === 'AR' ? 'selected' : ''}>Awaiting Repair</option>
                 <option value="Under Repair" ${currentStatus === 'Under Repair' ? 'selected' : ''}>Under Repair</option>
-                <option value="Repairs Completed" ${currentStatus === 'Repairs Completed' ? 'selected' : ''}>Repairs Completed</option>
+                <option value="GO" ${currentStatus === 'GO' ? 'selected' : ''}>Repairs Completed</option>
             </select>
         `;
 
