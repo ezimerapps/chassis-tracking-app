@@ -138,7 +138,17 @@ document.addEventListener("DOMContentLoaded", async function() {
                     GO: 0
                 };
             }
-            summary[row.account][row.status]++;
+
+            // Log status for debugging
+            console.log(`Processing status: ${row.status} for account: ${row.account}`);
+
+            // Ensure status value matches exactly
+            const status = row.status;
+            if (status === 'AE' || status === 'AA' || status === 'AR' || status === 'UR' || status === 'GO') {
+                summary[row.account][status]++;
+            } else {
+                console.warn(`Unexpected status: ${status}`);
+            }
         });
 
         // Generate table rows
