@@ -281,7 +281,7 @@ td button:first-child:hover {
         position: fixed;
         bottom: 0;
         width: 100%;
-        background-color: #333;
+        background-color: #FFF;
         justify-content: center;
         align-items: center;
         height: 60px;
@@ -289,7 +289,7 @@ td button:first-child:hover {
     }
 
     .bottom-nav-mobile .nav-item {
-        color: white;
+        color: #333;
         font-size: 24px;
     }
 }
