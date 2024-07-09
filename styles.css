@@ -52,6 +52,10 @@ button:hover {
     box-sizing: border-box;
 }
 
+#close-accounts-overview-popup {
+    margin-top: 20px;
+}
+
 form label {
     display: block;
     margin-bottom: 8px;
