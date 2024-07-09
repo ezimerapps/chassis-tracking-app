@@ -71,12 +71,12 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     function getStatusStyle(status, daysInStatus) {
         if (status === 'GO') {
-        return { backgroundColor: 'green', color: 'white', fontWeight: 'bold' };
+            return { backgroundColor: 'green', color: 'white', fontWeight: 'bold' };
         }
         if (daysInStatus <= 3) {
-        return { backgroundColor: 'yellow', color: 'black', fontWeight: 'bold' };
+            return { backgroundColor: 'yellow', color: 'black', fontWeight: 'bold' };
         } else {
-        return { backgroundColor: 'red', color: 'white', fontWeight: 'bold' };
+            return { backgroundColor: 'red', color: 'white', fontWeight: 'bold' };
         }
     }
 
@@ -108,7 +108,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         data.forEach((row) => {
             const daysInStatus = row.rtat_start ? calculateDaysSince(row.rtat_start) : 'N/A';
             const statusText = getStatusWithDays(row.status, daysInStatus);
-            const style = getStatusStyle(daysInStatus);
+            const style = getStatusStyle(row.status, daysInStatus);
             const rtat = row.status === 'GO' ? calculateRTAT(row.rtat_start, row.created_at) : daysInStatus;
             const rtatText = (rtat !== 'N/A') ? getRTATText(rtat) : rtat;
             const tr = document.createElement('tr');
