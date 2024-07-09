@@ -74,6 +74,11 @@ form textarea {
     height: 100px;
 }
 
+.button-group {
+    display: flex;
+    justify-content: space-between;
+}
+
 form button {
     display: inline-block;
     background-color: #28a745;
@@ -91,16 +96,8 @@ form button:hover {
 }
 
 #close-popup {
-    display: inline-block;
     background-color: #dc3545;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    margin-top: 10px;
+    margin-left: 10px;
 }
 
 #close-popup:hover {
