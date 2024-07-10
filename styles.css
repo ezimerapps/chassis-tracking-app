@@ -341,6 +341,7 @@ button.save-button:hover {
 @media (max-width: 768px) {
     table, thead, tbody, th, td, tr {
         display: block;
+        background-color: #f4f4f9;
     }
 
     th {
