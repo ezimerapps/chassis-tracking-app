@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     document.getElementById('chassis-form').addEventListener('submit', async function (e) {
         e.preventDefault();
         const account = document.getElementById('account').value;
-        const chassisNumbers = document.getElementById('chassis-numbers').value.split('\n').map(num => num.trim()).filter(num => num !== '');
+        const chassisNumbers = document.getElementById('chassis-numbers').value.split('\n').map(num => num.trim().toUpperCase()).filter(num => num !== '');
         const status = document.getElementById('status').value;
         const comments = document.getElementById('comments').value;
 
