@@ -37,7 +37,7 @@ button:hover {
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.7);
-    z-index: 1000;
+    z-index: 2000; 
     justify-content: center;
     align-items: center;
 }
@@ -174,12 +174,12 @@ td button:first-child:hover {
 
 /* Additional styles for save button */
 button.save-button {
-    background-color: #28a745; /* Green */
+    background-color: #28a745; 
     color: #fff;
 }
 
 button.save-button:hover {
-    background-color: #218838; /* Darker green */
+    background-color: #218838; 
 }
 
 /* Sort section styles */
@@ -196,7 +196,7 @@ button.save-button:hover {
     display: flex;
     justify-content: center;
     gap: 10px;
-    display: none; /* Hide sort buttons on desktop */
+    display: none; 
 }
 
 .sort-buttons button {
@@ -213,7 +213,7 @@ button.save-button:hover {
     background-color: #FFF;
     height: 60px;
     box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
+    z-index: 500; /* Ensure this is lower than the popup */
 }
 
 .bottom-nav-desktop .nav-item, .bottom-nav-mobile .nav-item {
@@ -264,18 +264,18 @@ button.save-button:hover {
     }
 
     .sort-section p {
-        display: block; /* Show on mobile */
+        display: block; 
     }
 
     .sort-buttons {
-        display: flex; /* Show sort buttons on mobile */
+        display: flex; 
         justify-content: center;
-        flex-direction: row; /* Ensure buttons are aligned horizontally */
+        flex-direction: row; 
         gap: 5px;
     }
 
     .sort-buttons button {
-        flex: 1; /* Ensure buttons take equal space */
+        flex: 1; 
         font-size: 12px;
     }
 
@@ -291,7 +291,7 @@ button.save-button:hover {
         justify-content: center;
         align-items: center;
         height: 50px;
-        z-index: 1000;
+        z-index: 500; 
         box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
     }
 
@@ -313,7 +313,7 @@ button.save-button:hover {
     justify-content: center;
     align-items: center;
     height: 50px;
-    z-index: 1000;
+    z-index: 500;
     box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -374,7 +374,7 @@ button.save-button:hover {
     }
 }
 
-/* Accounts Overview Table Styles */
+/* Accounts Overview Table Desktop Styles */
 .popup-content .table-wrapper {
     overflow-x: auto;
 }
