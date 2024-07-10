@@ -346,15 +346,17 @@ button.save-button:hover {
     td {
         border: none;
         position: relative;
-        padding-left: 50%;
+        padding-left: 45%;
+        padding-top: 10px;
+        padding-bottom: 10px;
         text-align: left;
+        border-bottom: 1px solid #ccc;
     }
 
     td:before {
         position: absolute;
-        top: 50%;
+        top: 10px;
         left: 10px;
-        transform: translateY(-50%);
         font-weight: bold;
         white-space: nowrap;
     }
@@ -368,10 +370,35 @@ button.save-button:hover {
 
     tr {
         margin-bottom: 15px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        border-radius: 4px;
-
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        padding: 0;
+        overflow: hidden;
+        background-color: #fff;
     }
+
+    tr:first-of-type {
+        margin-top: 0;
+        padding-top: 0;
+    }
+
+    tr:last-of-type {
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    tr td:last-of-type {
+        border-bottom: none;
+    }
+
+    tr td:first-of-type {
+        padding-top: 15px;
+    }
+
+    tr td:last-of-type {
+        padding-bottom: 15px;
+    }
+    
 }
 
 /* Accounts Overview Table Desktop Styles */
