@@ -132,6 +132,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             const tr = document.createElement('tr');
             tr.setAttribute('data-id', row.id);
             const encodedComments = encodeURIComponent(row.comments || '').replace(/'/g, "%27");
+            tr.setAttribute('data-comments', row.comments || '');
             tr.innerHTML = `
                 <td>${row.account}</td>
                 <td>${row.chassis_number}</td>
@@ -211,7 +212,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         
         // Get current values
         const currentStatus = statusCell.innerText.split(' for ')[0];
-        const currentComments = commentsCell.innerText;
+        const currentComments = tr.getAttribute('data-comments') || '';
         
         // Change status cell to dropdown
         statusCell.innerHTML = `
