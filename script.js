@@ -135,10 +135,10 @@ document.addEventListener("DOMContentLoaded", async function() {
                 <td>${row.comments ? `<button onclick="viewComments('${row.id}', '${encodedComments}')">View Comments</button>` : 'No Comments'}</td>
                 <td>${rtatText}</td>
                 <td>
-                    <button onclick="enableEdit('${row.id}')">Update</button>
-                    <button onclick="deleteChassis('${row.id}')">Delete</button>
+                    <button class="update-button" onclick="enableEdit('${row.id}')">Update</button>
+                    <button class="delete-button" id="delete-${row.id}" onclick="confirmDelete('${row.id}')">Delete</button>
                     <button class="save-button" onclick="saveEdit('${row.id}')" style="display:none">Save</button>
-                    <button onclick="cancelEdit('${row.id}')" style="display:none">Close</button>
+                    <button class="close-button" onclick="cancelEdit('${row.id}')" style="display:none">Close</button>
                 </td>
             `;
             tbody.appendChild(tr);
@@ -201,7 +201,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         const statusCell = tr.cells[2];
         const commentsCell = tr.cells[3];
         const updateButton = tr.querySelector('button[onclick^="enableEdit"]');
-        const deleteButton = tr.querySelector('button[onclick^="deleteChassis"]');
+        const deleteButton = tr.querySelector('button[onclick^="confirmDelete"]');
         const saveButton = tr.querySelector('button.save-button');
         const closeButton = tr.querySelector('button[onclick^="cancelEdit"]');
         
@@ -235,7 +235,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         const statusSelect = tr.querySelector('#status-select');
         const commentsTextarea = tr.querySelector('#comments-textarea');
         const updateButton = tr.querySelector('button[onclick^="enableEdit"]');
-        const deleteButton = tr.querySelector('button[onclick^="deleteChassis"]');
+        const deleteButton = tr.querySelector('button[onclick^="confirmDelete"]');
         const saveButton = tr.querySelector('button.save-button');
         const closeButton = tr.querySelector('button[onclick^="cancelEdit"]');
 
@@ -273,6 +273,24 @@ document.addEventListener("DOMContentLoaded", async function() {
     window.cancelEdit = function(id) {
         loadChassis();
     }
+
+    window.confirmDelete = function(id) {
+        const deleteButton = document.getElementById(`delete-${id}`);
+        if (deleteButton.dataset.confirm === "true") {
+            deleteChassis(id);
+        } else {
+            deleteButton.innerHTML = '<i class="fa-solid fa-exclamation"></i>';
+            deleteButton.dataset.confirm = "true";
+
+            // Revert the button back after 3 seconds
+            setTimeout(() => {
+                if (deleteButton.dataset.confirm === "true") {
+                    deleteButton.innerHTML = "Delete";
+                    deleteButton.dataset.confirm = "false";
+                }
+            }, 3000);
+        }
+    };
 
     window.deleteChassis = async function(id) {
         try {
