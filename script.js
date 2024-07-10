@@ -131,7 +131,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             const rtatText = (rtat !== 'N/A') ? getRTATText(rtat) : rtat;
             const tr = document.createElement('tr');
             tr.setAttribute('data-id', row.id);
-            const encodedComments = encodeURIComponent(row.comments || '');
+            const encodedComments = encodeURIComponent(row.comments || '').replace(/'/g, "%27");
             tr.innerHTML = `
                 <td>${row.account}</td>
                 <td>${row.chassis_number}</td>
