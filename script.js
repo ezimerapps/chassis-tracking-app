@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     document.getElementById('close-popup').addEventListener('click', function () {
         document.getElementById('chassis-popup').style.display = 'none';
+        document.getElementById('chassis-form').reset();
     });
 
     document.getElementById('close-comments-popup').addEventListener('click', function () {
@@ -58,6 +59,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
         await Promise.all(promises);
         document.getElementById('chassis-popup').style.display = 'none';
+        document.getElementById('chassis-form').reset();
         loadChassis(); // Refresh the chassis list
     });
 
