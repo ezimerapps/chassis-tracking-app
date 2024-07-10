@@ -40,21 +40,25 @@ document.addEventListener("DOMContentLoaded", async function() {
     document.getElementById('chassis-form').addEventListener('submit', async function (e) {
         e.preventDefault();
         const account = document.getElementById('account').value;
-        const chassisNumber = document.getElementById('chassis-number').value;
+        const chassisNumbers = document.getElementById('chassis-numbers').value.split('\n').map(num => num.trim()).filter(num => num !== '');
         const status = document.getElementById('status').value;
         const comments = document.getElementById('comments').value;
 
-        const data = {
-            account,
-            chassis_number: chassisNumber,
-            status,
-            comments,
-            created_at: serverTimestamp(),  // Save server timestamp
-            rtat_start: serverTimestamp()  // Start RTAT from now
-        };
+        const promises = chassisNumbers.map(chassisNumber => {
+            const data = {
+                account,
+                chassis_number: chassisNumber,
+                status,
+                comments,
+                created_at: serverTimestamp(),  // Save server timestamp
+                rtat_start: serverTimestamp()  // Start RTAT from now
+            };
+            return saveChassis(data);
+        });
 
-        await saveChassis(data);
+        await Promise.all(promises);
         document.getElementById('chassis-popup').style.display = 'none';
+        loadChassis(); // Refresh the chassis list
     });
 
     async function saveChassis(data) {
@@ -62,11 +66,11 @@ document.addEventListener("DOMContentLoaded", async function() {
             console.log("Saving chassis data:", data);
             await addDoc(chassisCollection, data);
             console.log('Chassis data saved:', data);
-            loadChassis();
         } catch (error) {
             console.error('Error saving chassis data:', error);
         }
     }
+
 
     function calculateDaysSince(date) {
         const now = new Date();
