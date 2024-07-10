@@ -80,6 +80,10 @@ form textarea {
     height: 100px;
 }
 
+#chassis-numbers {
+    text-transform: uppercase;
+}
+
 .button-group {
     display: flex;
     justify-content: space-between;
