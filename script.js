@@ -37,6 +37,14 @@ document.addEventListener("DOMContentLoaded", async function() {
         updateSummaryTable(chassisData);
     });
 
+    document.getElementById('repaired-chassis-button-desktop').addEventListener('click', function () {
+        window.location.href = 'repaired_chassis.html';
+    });
+
+    document.getElementById('repaired-chassis-button-mobile').addEventListener('click', function () {
+        window.location.href = 'repaired_chassis.html';
+    });
+    
     document.getElementById('chassis-form').addEventListener('submit', async function (e) {
         e.preventDefault();
         const account = document.getElementById('account').value;
