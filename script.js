@@ -81,12 +81,12 @@ document.addEventListener("DOMContentLoaded", async function() {
         return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
     }
 
-    function calculateRTAT(createdAt) {
-        const now = new Date();
+    function calculateRTAT(createdAt, rtatEnd) {
+        const endDate = rtatEnd ? rtatEnd.toDate() : new Date();
         const startDate = createdAt.toDate();
 
         // Calculate the difference in whole days
-        const diffTime = Math.abs(now.setHours(0, 0, 0, 0) - startDate.setHours(0, 0, 0, 0));
+        const diffTime = Math.abs(endDate.setHours(0, 0, 0, 0) - startDate.setHours(0, 0, 0, 0));
         return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
     }
 
@@ -130,7 +130,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             const daysInStatus = row.status_date ? calculateDaysSince(row.status_date) : 'N/A';
             const statusText = getStatusWithDays(row.status, daysInStatus);
             const style = getStatusStyle(row.status, daysInStatus);
-            const rtat = row.created_at ? calculateRTAT(row.created_at) : 'N/A';
+            const rtat = row.created_at ? calculateRTAT(row.created_at, row.rtat_end) : 'N/A';
             const rtatText = (rtat !== 'N/A') ? getRTATText(rtat) : rtat;
             const tr = document.createElement('tr');
             tr.setAttribute('data-id', row.id);
@@ -251,7 +251,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             };
 
             if (newStatus === 'GO') {
-                updateData.created_at = serverTimestamp();
+                updateData.rtat_end = serverTimestamp(); // Add rtat_end timestamp
             }
 
             await updateDoc(chassisDoc, updateData);
