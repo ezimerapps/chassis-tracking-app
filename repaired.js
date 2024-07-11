@@ -1,7 +1,7 @@
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
 
 document.addEventListener("DOMContentLoaded", async function() {
-    const db = window.db; // Ensure this is accessible, set it up in your main JS or HTML as done before
+    const db = window.db;
     const chassisArchiveCollection = collection(db, 'chassis-archive');
     let chassisData = [];
 
