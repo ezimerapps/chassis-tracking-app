@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 status,
                 comments,
                 created_at: serverTimestamp(),  // Save server timestamp
-                date_added: serverTimestamp()  // Add the date_added field
+                rtat_start: serverTimestamp()  // Start RTAT from now
             };
             return saveChassis(data);
         });
@@ -73,10 +73,10 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
     }
 
+
     function calculateDaysSince(date) {
         const now = new Date();
         const startDate = date.toDate();
-        startDate.setHours(0, 0, 0, 0);  // Normalize to midnight
         const diffTime = Math.abs(now - startDate);
         return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Convert to days
     }
@@ -114,14 +114,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     async function loadChassis() {
         try {
             const querySnapshot = await getDocs(chassisCollection);
-            const now = new Date();  // Default date to use if date_added is missing
-            chassisData = querySnapshot.docs.map(doc => {
-                const data = doc.data();
-                if (!data.date_added) {
-                    data.date_added = { toDate: () => now };  // Set default date if missing
-                }
-                return { id: doc.id, ...data };
-            });
+            chassisData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             displayChassis(chassisData);
             updateSummaryTable(chassisData);
         } catch (error) {
@@ -133,10 +126,10 @@ document.addEventListener("DOMContentLoaded", async function() {
         const tbody = document.getElementById('chassis-table').getElementsByTagName('tbody')[0];
         tbody.innerHTML = '';
         data.forEach((row) => {
-            const daysInStatus = row.date_added ? calculateDaysSince(row.date_added) : 'N/A';
+            const daysInStatus = row.rtat_start ? calculateDaysSince(row.rtat_start) : 'N/A';
             const statusText = getStatusWithDays(row.status, daysInStatus);
             const style = getStatusStyle(row.status, daysInStatus);
-            const rtat = row.status === 'GO' ? calculateDaysSince(row.date_added) : daysInStatus;
+            const rtat = row.status === 'GO' ? calculateRTAT(row.rtat_start, row.created_at) : daysInStatus;
             const rtatText = (rtat !== 'N/A') ? getRTATText(rtat) : rtat;
             const tr = document.createElement('tr');
             tr.setAttribute('data-id', row.id);
@@ -153,7 +146,8 @@ document.addEventListener("DOMContentLoaded", async function() {
                     <button class="delete-button" id="delete-${row.id}" onclick="confirmDelete('${row.id}')">Delete</button>
                     <button class="save-button" onclick="saveEdit('${row.id}')" style="display:none">Save</button>
                     <button class="close-button" onclick="cancelEdit('${row.id}')" style="display:none">Close</button>
-                `;
+                </td>
+            `;
             tbody.appendChild(tr);
         });
     }
