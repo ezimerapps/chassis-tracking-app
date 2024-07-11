@@ -1,4 +1,4 @@
-import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
 
 document.addEventListener("DOMContentLoaded", async function() {
     const db = window.db;
@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     document.getElementById('repaired-chassis-button-mobile').addEventListener('click', function () {
         window.location.href = 'repaired_chassis.html';
     });
-    
+
     document.getElementById('chassis-form').addEventListener('submit', async function (e) {
         e.preventDefault();
         const account = document.getElementById('account').value;
@@ -156,7 +156,6 @@ document.addEventListener("DOMContentLoaded", async function() {
             console.error('Error moving chassis to archive:', error);
         }
     }
-                
 
     window.saveEdit = async function(id) {
         const tr = document.querySelector(`tr[data-id="${id}"]`);
