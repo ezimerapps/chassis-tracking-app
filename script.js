@@ -132,17 +132,26 @@ document.addEventListener("DOMContentLoaded", async function() {
     async function moveChassisToArchive(id, data) {
         try {
             const chassisDoc = doc(db, 'chassis-tracking', id);
-            const archiveData = { ...data, archived_at: serverTimestamp() };
+            const docSnap = await getDoc(chassisDoc);
+            if (docSnap.exists()) {
+                const chassisData = docSnap.data();
+                const archiveData = {
+                    ...chassisData,
+                    archived_at: serverTimestamp()
+                };
+                await addDoc(collection(db, 'chassis-archive'), archiveData);
+                console.log('Chassis data moved to archive');
 
-            await addDoc(collection(db, 'chassis-archive'), archiveData);
-            console.log('Chassis data moved to archive');
-
-            await deleteDoc(chassisDoc);
-            console.log('Chassis data deleted from active collection');
+                await deleteDoc(chassisDoc);
+                console.log('Chassis data deleted from active collection');
+            } else {
+                console.error('No such document!');
+            }
         } catch (error) {
             console.error('Error moving chassis to archive:', error);
         }
     }
+                
 
     window.saveEdit = async function(id) {
         const tr = document.querySelector(`tr[data-id="${id}"]`);
