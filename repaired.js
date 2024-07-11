@@ -33,4 +33,12 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
 
     loadArchivedChassis();
+
+    document.getElementById('home-button-desktop').addEventListener('click', function () {
+        window.location.href = 'index.html';
+    });
+
+    document.getElementById('home-button-mobile').addEventListener('click', function () {
+        window.location.href = 'index.html';
+    });
 });
