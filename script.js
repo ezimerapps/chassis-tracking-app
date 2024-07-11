@@ -51,6 +51,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 status,
                 comments,
                 created_at: serverTimestamp(),
+                rtat_start: serverTimestamp(),
                 status_date: serverTimestamp()
             };
             return saveChassis(data);
