@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 <td>${row.chassis_number}</td>
                 <td>${row.status}</td>
                 <td>${row.comments}</td>
-                <td>${new Date(row.archived_at.seconds * 1000).toLocaleDateString()}</td>
+                <td>${row.archived_at ? new Date(row.archived_at.seconds * 1000).toLocaleDateString() : ''}</td>
             `;
             tbody.appendChild(tr);
         });
