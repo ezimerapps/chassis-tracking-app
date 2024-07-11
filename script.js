@@ -6,7 +6,6 @@ document.addEventListener("DOMContentLoaded", async function() {
     let chassisData = [];
     let currentSortColumn = null;
 
-    // Add event listeners for new add chassis buttons
     document.getElementById('add-chassis-button-desktop').addEventListener('click', function () {
         document.getElementById('chassis-popup').style.display = 'flex';
     });
@@ -30,12 +29,12 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     document.getElementById('accounts-overview-button-desktop').addEventListener('click', function () {
         document.getElementById('accounts-overview-popup').style.display = 'flex';
-        updateSummaryTable(chassisData); // Ensure the summary table is updated with the latest data
+        updateSummaryTable(chassisData);
     });
 
     document.getElementById('accounts-overview-button-mobile').addEventListener('click', function () {
         document.getElementById('accounts-overview-popup').style.display = 'flex';
-        updateSummaryTable(chassisData); // Ensure the summary table is updated with the latest data
+        updateSummaryTable(chassisData);
     });
 
     document.getElementById('chassis-form').addEventListener('submit', async function (e) {
@@ -51,8 +50,9 @@ document.addEventListener("DOMContentLoaded", async function() {
                 chassis_number: chassisNumber,
                 status,
                 comments,
-                created_at: serverTimestamp(),  // Save server timestamp
-                rtat_start: serverTimestamp()  // Start RTAT from now
+                created_at: serverTimestamp(),
+                rtat_start: serverTimestamp(),
+                status_date: serverTimestamp()
             };
             return saveChassis(data);
         });
@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         await Promise.all(promises);
         document.getElementById('chassis-popup').style.display = 'none';
         document.getElementById('chassis-form').reset();
-        loadChassis(); // Refresh the chassis list
+        loadChassis();
     });
 
     async function saveChassis(data) {
@@ -73,20 +73,18 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
     }
 
-
     function calculateDaysSince(date) {
         const now = new Date();
         const startDate = date.toDate();
         const diffTime = Math.abs(now - startDate);
-        return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Convert to days
+        return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     }
 
-    function calculateRTAT(rtatStart, goDate) {
-        if (!rtatStart || !goDate) return 'N/A';
-        const endDate = goDate.toDate();
-        const startDate = rtatStart.toDate();
-        const diffTime = Math.abs(endDate - startDate);
-        return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Convert to days
+    function calculateRTAT(createdAt) {
+        const now = new Date();
+        const startDate = createdAt.toDate();
+        const diffTime = Math.abs(now - startDate);
+        return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     }
 
     function getStatusStyle(status, daysInStatus) {
@@ -126,10 +124,10 @@ document.addEventListener("DOMContentLoaded", async function() {
         const tbody = document.getElementById('chassis-table').getElementsByTagName('tbody')[0];
         tbody.innerHTML = '';
         data.forEach((row) => {
-            const daysInStatus = row.rtat_start ? calculateDaysSince(row.rtat_start) : 'N/A';
+            const daysInStatus = row.status_date ? calculateDaysSince(row.status_date) : 'N/A';
             const statusText = getStatusWithDays(row.status, daysInStatus);
             const style = getStatusStyle(row.status, daysInStatus);
-            const rtat = row.status === 'GO' ? calculateRTAT(row.rtat_start, row.created_at) : daysInStatus;
+            const rtat = row.created_at ? calculateRTAT(row.created_at) : 'N/A';
             const rtatText = (rtat !== 'N/A') ? getRTATText(rtat) : rtat;
             const tr = document.createElement('tr');
             tr.setAttribute('data-id', row.id);
@@ -155,7 +153,6 @@ document.addEventListener("DOMContentLoaded", async function() {
     function updateSummaryTable(data) {
         const summary = {};
 
-        // Initialize summary object
         data.forEach(row => {
             if (!summary[row.account]) {
                 summary[row.account] = {
@@ -167,10 +164,8 @@ document.addEventListener("DOMContentLoaded", async function() {
                 };
             }
 
-            // Log status for debugging
             console.log(`Processing status: ${row.status} for account: ${row.account}`);
 
-            // Ensure status value matches exactly
             const status = row.status;
             if (status === 'AE' || status === 'AA' || status === 'AR' || status === 'UR' || status === 'GO') {
                 summary[row.account][status]++;
@@ -179,7 +174,6 @@ document.addEventListener("DOMContentLoaded", async function() {
             }
         });
 
-        // Generate table rows
         const tbody = document.getElementById('summary-table').getElementsByTagName('tbody')[0];
         tbody.innerHTML = '';
         for (const account in summary) {
@@ -211,12 +205,10 @@ document.addEventListener("DOMContentLoaded", async function() {
         const deleteButton = tr.querySelector('button[onclick^="confirmDelete"]');
         const saveButton = tr.querySelector('button.save-button');
         const closeButton = tr.querySelector('button[onclick^="cancelEdit"]');
-        
-        // Get current values
+
         const currentStatus = statusCell.innerText.split(' for ')[0];
         const currentComments = tr.getAttribute('data-comments') || '';
-        
-        // Change status cell to dropdown
+
         statusCell.innerHTML = `
             <select id="status-select">
                 <option value="AE" ${currentStatus === 'AE' ? 'selected' : ''}>Awaiting Estimate</option>
@@ -227,10 +219,8 @@ document.addEventListener("DOMContentLoaded", async function() {
             </select>
         `;
 
-        // Change comments cell to textarea
         commentsCell.innerHTML = `<textarea id="comments-textarea">${currentComments}</textarea>`;
-        
-        // Hide update and delete buttons, show save and close buttons
+
         updateButton.style.display = 'none';
         deleteButton.style.display = 'none';
         saveButton.style.display = 'inline';
@@ -248,18 +238,16 @@ document.addEventListener("DOMContentLoaded", async function() {
 
         const newStatus = statusSelect.value;
         const newComments = commentsTextarea.value;
-        
+
         try {
             const chassisDoc = doc(db, 'chassis-tracking', id);
             const updateData = {
                 status: newStatus,
                 comments: newComments,
-                rtat_start: serverTimestamp() // Reset the RTAT start timestamp
+                status_date: serverTimestamp()
             };
 
-            // Stop RTAT when status changes to "GO"
             if (newStatus === 'GO') {
-                updateData.rtat_start = null;
                 updateData.created_at = serverTimestamp();
             }
 
@@ -270,7 +258,6 @@ document.addEventListener("DOMContentLoaded", async function() {
             console.error('Error updating chassis data:', error);
         }
 
-        // Hide save and close buttons, show update and delete buttons
         updateButton.style.display = 'inline';
         deleteButton.style.display = 'inline';
         saveButton.style.display = 'none';
@@ -289,7 +276,6 @@ document.addEventListener("DOMContentLoaded", async function() {
             deleteButton.innerHTML = '<i class="fa-solid fa-exclamation"></i>';
             deleteButton.dataset.confirm = "true";
 
-            // Revert the button back after 3 seconds
             setTimeout(() => {
                 if (deleteButton.dataset.confirm === "true") {
                     deleteButton.innerHTML = "Delete";
