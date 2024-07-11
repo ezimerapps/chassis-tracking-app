@@ -84,7 +84,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         const now = new Date();
         const startDate = date.toDate();
 
-        // Calculate the difference in whole days
         const diffTime = Math.abs(now.setHours(0, 0, 0, 0) - startDate.setHours(0, 0, 0, 0));
         return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
     }
@@ -93,7 +92,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         const endDate = rtatEnd ? rtatEnd.toDate() : new Date();
         const startDate = createdAt.toDate();
 
-        // Calculate the difference in whole days
         const diffTime = Math.abs(endDate.setHours(0, 0, 0, 0) - startDate.setHours(0, 0, 0, 0));
         return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
     }
@@ -128,6 +126,112 @@ document.addEventListener("DOMContentLoaded", async function() {
             updateSummaryTable(chassisData);
         } catch (error) {
             console.error('Error loading chassis data:', error);
+        }
+    }
+
+    async function moveChassisToArchive(id, data) {
+        try {
+            const chassisDoc = doc(db, 'chassis-tracking', id);
+            const archiveData = { ...data, archived_at: serverTimestamp() };
+
+            await addDoc(collection(db, 'chassis-archive'), archiveData);
+            console.log('Chassis data moved to archive');
+
+            await deleteDoc(chassisDoc);
+            console.log('Chassis data deleted from active collection');
+        } catch (error) {
+            console.error('Error moving chassis to archive:', error);
+        }
+    }
+
+    window.saveEdit = async function(id) {
+        const tr = document.querySelector(`tr[data-id="${id}"]`);
+        const statusSelect = tr.querySelector('#status-select');
+        const commentsTextarea = tr.querySelector('#comments-textarea');
+        const updateButton = tr.querySelector('button[onclick^="enableEdit"]');
+        const deleteButton = tr.querySelector('button[onclick^="confirmDelete"]');
+        const saveButton = tr.querySelector('button.save-button');
+        const closeButton = tr.querySelector('button[onclick^="cancelEdit"]');
+
+        const newStatus = statusSelect.value;
+        const newComments = commentsTextarea.value;
+
+        try {
+            const chassisDoc = doc(db, 'chassis-tracking', id);
+            const updateData = {
+                status: newStatus,
+                comments: newComments,
+                status_date: serverTimestamp()
+            };
+
+            if (newStatus === 'GO') {
+                updateData.rtat_end = serverTimestamp(); // Add rtat_end timestamp
+                await moveChassisToArchive(id, updateData);
+            } else {
+                await updateDoc(chassisDoc, updateData);
+                console.log('Chassis data updated');
+            }
+            loadChassis();
+        } catch (error) {
+            console.error('Error updating chassis data:', error);
+        }
+
+        updateButton.style.display = 'inline';
+        deleteButton.style.display = 'inline';
+        saveButton.style.display = 'none';
+        closeButton.style.display = 'none';
+    }
+
+    window.cancelEdit = function(id) {
+        loadChassis();
+    }
+
+    window.confirmDelete = function(id) {
+        const deleteButton = document.getElementById(`delete-${id}`);
+        if (deleteButton.dataset.confirm === "true") {
+            deleteChassis(id);
+        } else {
+            deleteButton.innerHTML = '<i class="fa-solid fa-exclamation"></i>';
+            deleteButton.dataset.confirm = "true";
+
+            setTimeout(() => {
+                if (deleteButton.dataset.confirm === "true") {
+                    deleteButton.innerHTML = "Delete";
+                    deleteButton.dataset.confirm = "false";
+                }
+            }, 3000);
+        }
+    };
+
+    window.deleteChassis = async function(id) {
+        try {
+            const chassisDoc = doc(db, 'chassis-tracking', id);
+            await deleteDoc(chassisDoc);
+            console.log('Chassis data deleted');
+            loadChassis();
+        } catch (error) {
+            console.error('Error deleting chassis data:', error);
+        }
+    };
+
+    window.sortTable = function(sortBy) {
+        chassisData.sort((a, b) => {
+            if (a[sortBy] < b[sortBy]) return -1;
+            if (a[sortBy] > b[sortBy]) return 1;
+            return 0;
+        });
+        displayChassis(chassisData);
+        highlightSortedColumn(sortBy);
+    };
+
+    function highlightSortedColumn(sortBy) {
+        if (currentSortColumn) {
+            document.querySelector(`th.sorting`).classList.remove('sorting');
+        }
+        const th = document.querySelector(`th[onclick="sortTable('${sortBy}')"]`);
+        if (th) {
+            th.classList.add('sorting');
+            currentSortColumn = sortBy;
         }
     }
 
@@ -236,96 +340,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         deleteButton.style.display = 'none';
         saveButton.style.display = 'inline';
         closeButton.style.display = 'inline';
-    }
-
-    window.saveEdit = async function(id) {
-        const tr = document.querySelector(`tr[data-id="${id}"]`);
-        const statusSelect = tr.querySelector('#status-select');
-        const commentsTextarea = tr.querySelector('#comments-textarea');
-        const updateButton = tr.querySelector('button[onclick^="enableEdit"]');
-        const deleteButton = tr.querySelector('button[onclick^="confirmDelete"]');
-        const saveButton = tr.querySelector('button.save-button');
-        const closeButton = tr.querySelector('button[onclick^="cancelEdit"]');
-
-        const newStatus = statusSelect.value;
-        const newComments = commentsTextarea.value;
-
-        try {
-            const chassisDoc = doc(db, 'chassis-tracking', id);
-            const updateData = {
-                status: newStatus,
-                comments: newComments,
-                status_date: serverTimestamp()
-            };
-
-            if (newStatus === 'GO') {
-                updateData.rtat_end = serverTimestamp(); // Add rtat_end timestamp
-            }
-
-            await updateDoc(chassisDoc, updateData);
-            console.log('Chassis data updated');
-            loadChassis();
-        } catch (error) {
-            console.error('Error updating chassis data:', error);
-        }
-
-        updateButton.style.display = 'inline';
-        deleteButton.style.display = 'inline';
-        saveButton.style.display = 'none';
-        closeButton.style.display = 'none';
-    }
-
-    window.cancelEdit = function(id) {
-        loadChassis();
-    }
-
-    window.confirmDelete = function(id) {
-        const deleteButton = document.getElementById(`delete-${id}`);
-        if (deleteButton.dataset.confirm === "true") {
-            deleteChassis(id);
-        } else {
-            deleteButton.innerHTML = '<i class="fa-solid fa-exclamation"></i>';
-            deleteButton.dataset.confirm = "true";
-
-            setTimeout(() => {
-                if (deleteButton.dataset.confirm === "true") {
-                    deleteButton.innerHTML = "Delete";
-                    deleteButton.dataset.confirm = "false";
-                }
-            }, 3000);
-        }
-    };
-
-    window.deleteChassis = async function(id) {
-        try {
-            const chassisDoc = doc(db, 'chassis-tracking', id);
-            await deleteDoc(chassisDoc);
-            console.log('Chassis data deleted');
-            loadChassis();
-        } catch (error) {
-            console.error('Error deleting chassis data:', error);
-        }
-    };
-
-    window.sortTable = function(sortBy) {
-        chassisData.sort((a, b) => {
-            if (a[sortBy] < b[sortBy]) return -1;
-            if (a[sortBy] > b[sortBy]) return 1;
-            return 0;
-        });
-        displayChassis(chassisData);
-        highlightSortedColumn(sortBy);
-    };
-
-    function highlightSortedColumn(sortBy) {
-        if (currentSortColumn) {
-            document.querySelector(`th.sorting`).classList.remove('sorting');
-        }
-        const th = document.querySelector(`th[onclick="sortTable('${sortBy}')"]`);
-        if (th) {
-            th.classList.add('sorting');
-            currentSortColumn = sortBy;
-        }
     }
 
     loadChassis();
