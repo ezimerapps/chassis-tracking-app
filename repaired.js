@@ -15,10 +15,20 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
     }
 
+    function calculateRTAT(createdAt, rtatEnd) {
+        const endDate = rtatEnd ? rtatEnd.toDate() : new Date();
+        const startDate = createdAt.toDate();
+        const diffTime = Math.abs(endDate.setHours(0, 0, 0, 0) - startDate.setHours(0, 0, 0, 0));
+        return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+    }
+
     function displayArchivedChassis(data) {
         const tbody = document.getElementById('archived-chassis-table').getElementsByTagName('tbody')[0];
         tbody.innerHTML = '';
         data.forEach((row) => {
+            const rtat = row.created_at ? calculateRTAT(row.created_at, row.rtat_end) : 'N/A';
+            const rtatText = rtat !== 'N/A' ? `${rtat} Days` : rtat;
+            
             const tr = document.createElement('tr');
             tr.setAttribute('data-id', row.id);
             tr.innerHTML = `
@@ -27,6 +37,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 <td>${row.status}</td>
                 <td>${row.comments}</td>
                 <td>${row.archived_at ? new Date(row.archived_at.seconds * 1000).toLocaleDateString() : ''}</td>
+                <td>${rtatText}</td>
             `;
             tbody.appendChild(tr);
         });
