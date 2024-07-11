@@ -75,15 +75,19 @@ document.addEventListener("DOMContentLoaded", async function() {
     function calculateDaysSince(date) {
         const now = new Date();
         const startDate = date.toDate();
-        const diffTime = Math.abs(now - startDate);
-        return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        // Calculate the difference in whole days
+        const diffTime = Math.abs(now.setHours(0, 0, 0, 0) - startDate.setHours(0, 0, 0, 0));
+        return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
     }
 
     function calculateRTAT(createdAt) {
         const now = new Date();
         const startDate = createdAt.toDate();
-        const diffTime = Math.abs(now - startDate);
-        return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        // Calculate the difference in whole days
+        const diffTime = Math.abs(now.setHours(0, 0, 0, 0) - startDate.setHours(0, 0, 0, 0));
+        return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
     }
 
     function getStatusStyle(status, daysInStatus) {
