@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBZuFsJ6mwj6_zBX4DMsB_70td5WS_XQLU",
@@ -22,41 +22,9 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-
-        document.addEventListener("DOMContentLoaded", async function() {
-            const chassisArchiveCollection = collection(db, 'chassis-archive');
-            let chassisData = [];
-
-            async function loadArchivedChassis() {
-                try {
-                    const querySnapshot = await getDocs(chassisArchiveCollection);
-                    chassisData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                    displayArchivedChassis(chassisData);
-                } catch (error) {
-                    console.error('Error loading archived chassis data:', error);
-                }
-            }
-
-            function displayArchivedChassis(data) {
-                const tbody = document.getElementById('archived-chassis-table').getElementsByTagName('tbody')[0];
-                tbody.innerHTML = '';
-                data.forEach((row) => {
-                    const tr = document.createElement('tr');
-                    tr.setAttribute('data-id', row.id);
-                    tr.innerHTML = `
-                        <td>${row.account}</td>
-                        <td>${row.chassis_number}</td>
-                        <td>${row.status}</td>
-                        <td>${row.comments}</td>
-                        <td>${new Date(row.archived_at.seconds * 1000).toLocaleDateString()}</td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-            }
-
-            loadArchivedChassis();
-        });
+        window.db = db; // Make db globally accessible
     </script>
+    <script type="module" src="repaired.js"></script>
 </head>
 <body>
     <h1>Repaired Chassis</h1>
