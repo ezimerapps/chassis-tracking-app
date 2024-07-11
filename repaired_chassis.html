@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repaired Chassis</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBZuFsJ6mwj6_zBX4DMsB_70td5WS_XQLU",
+            authDomain: "ezimer-tracking-c9237.firebaseapp.com",
+            projectId: "ezimer-tracking-c9237",
+            storageBucket: "ezimer-tracking-c9237.appspot.com",
+            messagingSenderId: "505006114011",
+            appId: "1:505006114011:web:ab3a7cc0918fe4686df8fe",
+            measurementId: "G-VM4Z5GDQYY"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        document.addEventListener("DOMContentLoaded", async function() {
+            const chassisArchiveCollection = collection(db, 'chassis-archive');
+            let chassisData = [];
+
+            async function loadArchivedChassis() {
+                try {
+                    const querySnapshot = await getDocs(chassisArchiveCollection);
+                    chassisData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    displayArchivedChassis(chassisData);
+                } catch (error) {
+                    console.error('Error loading archived chassis data:', error);
+                }
+            }
+
+            function displayArchivedChassis(data) {
+                const tbody = document.getElementById('archived-chassis-table').getElementsByTagName('tbody')[0];
+                tbody.innerHTML = '';
+                data.forEach((row) => {
+                    const tr = document.createElement('tr');
+                    tr.setAttribute('data-id', row.id);
+                    tr.innerHTML = `
+                        <td>${row.account}</td>
+                        <td>${row.chassis_number}</td>
+                        <td>${row.status}</td>
+                        <td>${row.comments}</td>
+                        <td>${new Date(row.archived_at.seconds * 1000).toLocaleDateString()}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            loadArchivedChassis();
+        });
+    </script>
+</head>
+<body>
+    <h1>Repaired Chassis</h1>
+    <div class="table-wrapper">
+        <table id="archived-chassis-table">
+            <thead>
+                <tr>
+                    <th>Account</th>
+                    <th>Chassis Number</th>
+                    <th>Status</th>
+                    <th>Comments</th>
+                    <th>Archived Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows will be injected here -->
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
