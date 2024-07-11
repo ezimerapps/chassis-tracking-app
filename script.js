@@ -136,7 +136,12 @@ document.addEventListener("DOMContentLoaded", async function() {
             if (docSnap.exists()) {
                 const chassisData = docSnap.data();
                 const archiveData = {
-                    ...chassisData,
+                    account: chassisData.account,
+                    chassis_number: chassisData.chassis_number,
+                    status: data.status,
+                    comments: data.comments,
+                    created_at: chassisData.created_at,
+                    status_date: data.status_date,
                     archived_at: serverTimestamp()
                 };
                 await addDoc(collection(db, 'chassis-archive'), archiveData);
