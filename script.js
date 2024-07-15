@@ -124,6 +124,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             chassisData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             displayChassis(chassisData);
             updateSummaryTable(chassisData);
+            updateChassisCount(chassisData.length); // Update the chassis count
         } catch (error) {
             console.error('Error loading chassis data:', error);
         }
@@ -272,8 +273,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                     <button class="delete-button" id="delete-${row.id}" onclick="confirmDelete('${row.id}')">Delete</button>
                     <button class="save-button" onclick="saveEdit('${row.id}')" style="display:none">Save</button>
                     <button class="close-button" onclick="cancelEdit('${row.id}')" style="display:none">Close</button>
-                </td>
-            `;
+                `;
             tbody.appendChild(tr);
         });
     }
@@ -317,6 +317,10 @@ document.addEventListener("DOMContentLoaded", async function() {
             `;
             tbody.appendChild(tr);
         }
+    }
+
+    function updateChassisCount(count) {
+        document.getElementById('chassis-count').innerText = count;
     }
 
     window.viewComments = function(id, encodedComments) {
