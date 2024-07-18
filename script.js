@@ -172,20 +172,32 @@ document.addEventListener("DOMContentLoaded", async function() {
 
         try {
             const chassisDoc = doc(db, 'chassis-tracking', id);
-            const updateData = {
-                status: newStatus,
-                comments: newComments,
-                status_date: serverTimestamp()
-            };
+            const docSnap = await getDoc(chassisDoc);
 
-            if (newStatus === 'GO') {
-                updateData.rtat_end = serverTimestamp(); // Add rtat_end timestamp
-                await moveChassisToArchive(id, updateData);
+            if (docSnap.exists()) {
+                const chassisData = docSnap.data();
+                const updateData = {
+                    comments: newComments,
+                    // We always update comments regardless of status change
+                };
+
+                if (chassisData.status !== newStatus) {
+                    updateData.status = newStatus;
+                    updateData.status_date = serverTimestamp();
+                }
+
+                if (newStatus === 'GO') {
+                    updateData.rtat_end = serverTimestamp(); // Add rtat_end timestamp
+                    await moveChassisToArchive(id, updateData);
+                } else {
+                    await updateDoc(chassisDoc, updateData);
+                    console.log('Chassis data updated');
+                }
+
+                loadChassis();
             } else {
-                await updateDoc(chassisDoc, updateData);
-                console.log('Chassis data updated');
+                console.error('No such document!');
             }
-            loadChassis();
         } catch (error) {
             console.error('Error updating chassis data:', error);
         }
