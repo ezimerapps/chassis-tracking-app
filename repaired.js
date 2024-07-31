@@ -22,7 +22,31 @@ document.addEventListener("DOMContentLoaded", async function() {
         return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
     }
 
+    function alphanumericSort(a, b) {
+        const re = /(\d+)|(\D+)/g;
+        const aChunks = String(a.chassis_number).match(re);
+        const bChunks = String(b.chassis_number).match(re);
+        
+        while (aChunks.length && bChunks.length) {
+            const aChunk = aChunks.shift();
+            const bChunk = bChunks.shift();
+            const aNum = parseInt(aChunk, 10);
+            const bNum = parseInt(bChunk, 10);
+            
+            if (isNaN(aNum) || isNaN(bNum)) {
+                if (aChunk < bChunk) return -1;
+                if (aChunk > bChunk) return 1;
+            } else {
+                if (aNum < bNum) return -1;
+                if (aNum > bNum) return 1;
+            }
+        }
+        
+        return aChunks.length - bChunks.length;
+    }
+
     function displayArchivedChassis(data) {
+        data.sort(alphanumericSort);
         const tbody = document.getElementById('archived-chassis-table').getElementsByTagName('tbody')[0];
         tbody.innerHTML = '';
         data.forEach((row) => {
